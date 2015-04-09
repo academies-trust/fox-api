@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateNotificationsTable extends Migration {
+class AddLinkTables extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,11 +12,7 @@ class CreateNotificationsTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('notifications', function(Blueprint $table)
-		{
-			$table->increments('id');
-			$table->string('message');
-		});
+		//
 	}
 
 	/**
@@ -26,7 +22,7 @@ class CreateNotificationsTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('notifications');
+		//
 	}
 
 }

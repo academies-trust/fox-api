@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Eloquent\Model;
 
-class Notice extends Model {
+class Resource extends Model {
 
 	public function posts()
 	{

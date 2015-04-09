@@ -11,11 +11,23 @@
 |
 */
 
-Route::get('/', 'WelcomeController@index');
+Route::post('/signup', function () {
+   $credentials = Input::only('email', 'password');
+   $credentials['password'] = Hash::make($credentials['password']);
+   $user = new \App\User;
+   try {
+       $user = $user->create($credentials);
+   } catch (Exception $e) {
+       return Response::json(['error' => 'User already exists.'], 409);
+   }
 
-Route::get('home', 'HomeController@index');
+   $token = JWTAuth::fromUser($user);
 
-Route::controllers([
-	'auth' => 'Auth\AuthController',
-	'password' => 'Auth\PasswordController',
-]);
+   return Response::json(compact('token'));
+});
+
+Route::post('/signin', 'AuthenticateController@authenticate');
+
+Route::get('/', function() {
+	return 'Home';
+});

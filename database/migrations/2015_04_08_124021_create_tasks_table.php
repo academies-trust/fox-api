@@ -15,7 +15,10 @@ class CreateTasksTable extends Migration {
 		Schema::create('tasks', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->timestamps();
+			$table->integer('grading_template_id');
+			$table->timestamp('due_at');
+			$table->timestamp('group_id');
+			$table->binary('allow_comments');
 		});
 	}
 

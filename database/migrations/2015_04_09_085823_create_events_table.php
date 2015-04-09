@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateAssignmentsTable extends Migration {
+class CreateEventsTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,7 +12,7 @@ class CreateAssignmentsTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('assignments', function(Blueprint $table)
+		Schema::create('events', function(Blueprint $table)
 		{
 			$table->increments('id');
 			$table->timestamps();
@@ -26,7 +26,7 @@ class CreateAssignmentsTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('assignments');
+		Schema::drop('events');
 	}
 
 }

@@ -15,6 +15,10 @@ class CreateSitesTable extends Migration {
 		Schema::create('sites', function(Blueprint $table)
 		{
 			$table->increments('id');
+			$table->string('name');
+			$table->string('slug',10)->unique();
+			$table->integer('domain_controller_id');
+			$table->string('hex_color',6);
 			$table->timestamps();
 		});
 	}
