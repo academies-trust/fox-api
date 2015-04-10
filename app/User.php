@@ -39,6 +39,10 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 		return $this->belongsToMany('App\Site');
 	}
 
+	public function siteUser() {
+		return $this->hasMany('App\SiteUser');
+	}
+
 	public function groups() {
 		return $this->belongsToMany('App\Group');
 	}
@@ -57,6 +61,15 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
 	public function tasks() {
 		return $this->hasMany('App\Task');
+	}
+
+	public function submissions()
+	{
+		return $this->hasMany('App\Submission', 'owner_id');
+	}
+
+	public function markingScheme() {
+		return $this->hasMany('App\MarkingScheme');
 	}
 
 }

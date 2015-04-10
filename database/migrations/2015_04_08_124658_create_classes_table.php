@@ -15,7 +15,7 @@ class CreateClassesTable extends Migration {
 		Schema::create('classes', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->integer('group_id');
+			$table->integer('group_id')->unsigned();
 		});
 	}
 

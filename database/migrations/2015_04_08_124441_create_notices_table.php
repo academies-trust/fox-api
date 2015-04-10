@@ -17,7 +17,7 @@ class CreateNoticesTable extends Migration {
 			$table->increments('id');
 			$table->string('title');
 			$table->text('content');
-			$table->integer('group_id');
+			$table->integer('group_id')->unsigned();
 			$table->binary('allow_comments');
 		});
 	}

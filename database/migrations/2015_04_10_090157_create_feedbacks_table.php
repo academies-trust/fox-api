@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTasksTable extends Migration {
+class CreateFeedbacksTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,13 +12,14 @@ class CreateTasksTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('tasks', function(Blueprint $table)
+		Schema::create('feedbacks', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->integer('grading_template_id')->unsigned();
-			$table->timestamp('due_at');
-			$table->integer('group_id')->unsigned();
+			$table->integer('student_id')->unsigned();
+			$table->text('content');
 			$table->binary('allow_comments');
+			$table->integer('marking_scheme_id')->unsigned()->nullable();
+			$table->integer('grade')->unsigned()->nullable();
 		});
 	}
 
@@ -29,7 +30,7 @@ class CreateTasksTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('tasks');
+		Schema::drop('feedbacks');
 	}
 
 }

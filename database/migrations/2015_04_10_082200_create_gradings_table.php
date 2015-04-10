@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateAttachmentsTable extends Migration {
+class CreateGradingsTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,11 +12,12 @@ class CreateAttachmentsTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('attachments', function(Blueprint $table)
+		Schema::create('gradings', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->integer('parent_id');
-			$table->integer('resource_id');
+			$table->integer('marking_scheme_id')->unsigned();
+			$table->string('name', 50);
+			$table->integer('grade')->unsigned();
 		});
 	}
 
@@ -27,7 +28,7 @@ class CreateAttachmentsTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('attachments');
+		Schema::drop('gradings');
 	}
 
 }

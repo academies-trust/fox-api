@@ -2,8 +2,8 @@
 
 use Illuminate\Database\Eloquent\Model;
 
-class Attachment extends Model {
+class ClaimStatus extends Model {
 
-	
+	//
 
 }

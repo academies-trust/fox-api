@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddLinkTables extends Migration {
+class CreateClaimStatusesTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,7 +12,11 @@ class AddLinkTables extends Migration {
 	 */
 	public function up()
 	{
-		//
+		Schema::create('claim_statuses', function(Blueprint $table)
+		{
+			$table->increments('id');
+			$table->string('name');
+		});
 	}
 
 	/**
@@ -22,7 +26,7 @@ class AddLinkTables extends Migration {
 	 */
 	public function down()
 	{
-		//
+		Schema::drop('claim_statuses');
 	}
 
 }

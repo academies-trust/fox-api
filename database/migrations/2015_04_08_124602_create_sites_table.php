@@ -17,7 +17,7 @@ class CreateSitesTable extends Migration {
 			$table->increments('id');
 			$table->string('name');
 			$table->string('slug',10)->unique();
-			$table->integer('domain_controller_id');
+			$table->integer('domain_controller_id')->unsigned();
 			$table->string('hex_color',6);
 			$table->timestamps();
 		});

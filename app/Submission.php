@@ -2,15 +2,19 @@
 
 use Illuminate\Database\Eloquent\Model;
 
-class Article extends Model {
+class Submission extends Model {
 
 	public function posts()
 	{
 		return $this->morphMany('App\Post', 'postable');
 	}
 
-	public function group() {
-		return $this->belongsTo('App\Group');
+	public function user() {
+		return $this->belongsTo('App\User');
+	}
+	
+	public function resources() {
+		return $this->hasMany('App\Resource');
 	}
 
 	public function comments() {

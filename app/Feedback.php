@@ -2,15 +2,15 @@
 
 use Illuminate\Database\Eloquent\Model;
 
-class Notice extends Model {
+class Feedback extends Model {
 
 	public function posts()
 	{
 		return $this->morphMany('App\Post', 'postable');
 	}
 
-	public function comments() {
-		return $this->hasMany('App\Comment');
+	public function student() {
+		return $this->belongsTo('App\User', 'student_id');
 	}
 
 }

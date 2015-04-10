@@ -15,7 +15,10 @@ class CreateEventsTable extends Migration {
 		Schema::create('events', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->timestamps();
+			$table->timestamp('starts_at');
+			$table->timestamp('ends_at');
+			$table->integer('group_id')->unsigned();
+			$table->binary('allow_comments');
 		});
 	}
 
@@ -28,5 +31,4 @@ class CreateEventsTable extends Migration {
 	{
 		Schema::drop('events');
 	}
-
 }

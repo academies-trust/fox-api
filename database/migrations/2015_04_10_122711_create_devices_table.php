@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePostsTable extends Migration {
+class CreateDevicesTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,15 +12,16 @@ class CreatePostsTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('posts', function(Blueprint $table)
+		Schema::create('devices', function(Blueprint $table)
 		{
 			$table->increments('id');
 			$table->integer('user_id')->unsigned();
-			$table->timestamps();
-			$table->timestamp('published_at');
-			$table->integer('postable_id')->unsigned();
-			$table->string('postable_type', 20);
+			$table->integer('enrol_count')->unsigned();
+			$table->string('serial', 15);
+			$table->binary('case');
+			$table->integer('scheme_id')->unsigned();
 			$table->softDeletes();
+			$table->timestamps();
 		});
 	}
 
@@ -31,7 +32,7 @@ class CreatePostsTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('posts');
+		Schema::drop('devices');
 	}
 
 }

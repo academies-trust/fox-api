@@ -14,4 +14,8 @@ class Task extends Model {
 		return $this->belongsTo('App\Group');
 	}
 
+	public function submissions() {
+		return $this->hasMany('App\Notification');
+	}
+
 }
