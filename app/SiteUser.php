@@ -6,16 +6,21 @@ class SiteUser extends Model {
 
 	protected $table = 'site_user';
 
-	public function User() {
-		$this->belongsTo('App\User');
+	protected $fillable = ['site_id', 'user_id', 'role_id'];
+
+
+	public $timestamps = false;
+
+	public function user() {
+		return $this->belongsTo('App\User');
 	}
 
-	public function Site() {
-		$this->belongsTo('App\Site');
+	public function site() {
+		return $this->belongsTo('App\Site');
 	}
 
-	public function Role() {
-		$this->belongsTo('App\Site');
+	public function role() {
+		return $this->belongsTo('App\Role');
 	}
 
 }

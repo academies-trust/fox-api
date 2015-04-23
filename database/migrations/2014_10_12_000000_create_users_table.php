@@ -20,7 +20,9 @@ class CreateUsersTable extends Migration {
 			$table->string('username', 60);
 			$table->string('password', 60);
 			$table->integer('auth_site_id')->unsigned();
+			$table->foreign('auth_site_id')->references('id')->on('sites');
 			$table->timestamps();
+			$table->softDeletes();
 		});
 	}
 

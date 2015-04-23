@@ -16,11 +16,11 @@ class CreatePermissionsTable extends Migration {
 		{
 			$table->increments('id');
 			$table->string('name', 20);
-			$table->binary('read');
-			$table->binary('contribute');
-			$table->binary('write');
-			$table->binary('admin');
-			$table->binary('own');
+			$table->boolean('read');
+			$table->boolean('contribute');
+			$table->boolean('write');
+			$table->boolean('admin');
+			$table->boolean('own');
 		});
 	}
 

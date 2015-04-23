@@ -4,6 +4,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Group extends Model {
 
+	use SoftDeletes;
+
+    protected $dates = ['deleted_at'];
+
 	public function modules() {
 		return $this->belongsToMany('App\Module', 'module_group');
 	}
@@ -14,6 +18,11 @@ class Group extends Model {
 
 	public function members() {
 		return $this->belongsToMany('App\User');
+	}
+
+	public function groupUser()
+	{
+		return $this->hasMany('App\GroupUser');
 	}
 
 }

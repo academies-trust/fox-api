@@ -4,6 +4,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Task extends Model {
 
+	protected $dates = ['due_at'];
+
 	public function posts()
 	{
 		return $this->morphMany('App\Post', 'postable');

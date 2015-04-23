@@ -16,9 +16,11 @@ class CreateFeedbacksTable extends Migration {
 		{
 			$table->increments('id');
 			$table->integer('student_id')->unsigned();
+			$table->foreign('student_id')->references('id')->on('users');
 			$table->text('content');
-			$table->binary('allow_comments');
+			$table->boolean('allow_comments');
 			$table->integer('marking_scheme_id')->unsigned()->nullable();
+			$table->foreign('marking_scheme_id')->references('id')->on('marking_schemes');
 			$table->integer('grade')->unsigned()->nullable();
 		});
 	}

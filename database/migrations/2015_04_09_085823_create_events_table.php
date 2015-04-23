@@ -18,7 +18,8 @@ class CreateEventsTable extends Migration {
 			$table->timestamp('starts_at');
 			$table->timestamp('ends_at');
 			$table->integer('group_id')->unsigned();
-			$table->binary('allow_comments');
+			$table->foreign('group_id')->references('id')->on('groups');
+			$table->boolean('allow_comments');
 		});
 	}
 

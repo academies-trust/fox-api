@@ -5,10 +5,15 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract {
 
 	use Authenticatable, CanResetPassword;
+
+	use SoftDeletes;
+
+    protected $dates = ['deleted_at'];
 
 	/**
 	 * The database table used by the model.
@@ -22,7 +27,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	 *
 	 * @var array
 	 */
-	protected $fillable = ['name', 'email', 'password'];
+	protected $fillable = ['name', 'email', 'username', 'password', 'auth_site_id'];
 
 	/**
 	 * The attributes excluded from the model's JSON form.
@@ -33,6 +38,11 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
 	public function notifications() {
 		return $this->hasMany('App\Notification');
+	}
+
+	public function authSite()
+	{
+		return $this->belongsTo('App\Site');
 	}
 
 	public function sites() {
@@ -70,6 +80,15 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
 	public function markingScheme() {
 		return $this->hasMany('App\MarkingScheme');
+	}
+
+	public function groupUser()
+	{
+		return $this->hasMany('App\GroupUser');
+	}
+	public function permissions()
+	{
+		return $this->belongsToMany('App\Permission', 'group_user');
 	}
 
 }

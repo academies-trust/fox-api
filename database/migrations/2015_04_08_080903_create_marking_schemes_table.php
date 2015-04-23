@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSchemesTable extends Migration {
+class CreateMarkingSchemesTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,11 +12,12 @@ class CreateSchemesTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('schemes', function(Blueprint $table)
+		Schema::create('marking_schemes', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->string('name');
-			$table->integer('insurance_id')->unsigned();
+			$table->string('name', 50);
+			$table->integer('user_id')->unsigned();
+			$table->foreign('user_id')->references('id')->on('users');
 			$table->softDeletes();
 			$table->timestamps();
 		});
@@ -29,7 +30,7 @@ class CreateSchemesTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('schemes');
+		Schema::drop('marking_schemes');
 	}
 
 }

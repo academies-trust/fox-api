@@ -26,8 +26,12 @@ Route::post('/signup', function () {
    return Response::json(compact('token'));
 });
 
-Route::post('/signin', 'AuthenticateController@authenticate');
+Route::get('sync', 'UserController@sync');
+
+Route::post('/signin', 'UserController@signin');
 
 Route::get('/', function() {
 	return 'Home';
 });
+
+Route::get('addralph', 'UserController@index');

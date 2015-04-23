@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateGroupsTable extends Migration {
+class CreateBehaviourModelsTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,11 +12,16 @@ class CreateGroupsTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('groups', function(Blueprint $table)
+		Schema::create('behaviour_models', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->string('name', 150);
+			$table->string('name');
+			$table->integer('value');
 			$table->integer('site_id')->unsigned();
+			$table->foreign('site_id')->references('id')->on('sites');
+			$table->boolean('positive');
+			$table->timestamps();
+			$table->softDeletes();
 		});
 	}
 
@@ -27,7 +32,7 @@ class CreateGroupsTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('groups');
+		Schema::drop('behaviour_models');
 	}
 
 }

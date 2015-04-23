@@ -4,6 +4,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Submission extends Model {
 
+	protected $dates = ['read_at', 'submiutted_at', 'marked_at'];
+
 	public function posts()
 	{
 		return $this->morphMany('App\Post', 'postable');

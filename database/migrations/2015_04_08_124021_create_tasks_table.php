@@ -15,10 +15,12 @@ class CreateTasksTable extends Migration {
 		Schema::create('tasks', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->integer('grading_template_id')->unsigned();
+			$table->integer('marking_scheme_id')->unsigned();
+			$table->foreign('marking_scheme_id')->references('id')->on('marking_schemes');
 			$table->timestamp('due_at');
 			$table->integer('group_id')->unsigned();
-			$table->binary('allow_comments');
+			$table->foreign('group_id')->references('id')->on('groups');
+			$table->boolean('allow_comments');
 		});
 	}
 

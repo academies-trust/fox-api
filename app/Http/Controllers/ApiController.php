@@ -6,10 +6,21 @@ use League\Fractal\Resource\Item;
 use League\Fractal\Manager;
 use League\Fractal\Pagination\Cursor;
 use League\Fractal\Pagination\CursorInterface;
+use JWTAuth;
+use Tymon\JWTAuth\Exceptions\JWTException;
 
 class ApiController extends Controller {
 
 	protected 	$statusCode = 200;
+
+	const CODE_WRONG_ARGS = 'GEN-FUBARGS';
+    const CODE_NOT_FOUND = 'GEN-LIKETHEWIND';
+    const CODE_INTERNAL_ERROR = 'GEN-AAAGGH';
+    const CODE_UNAUTHORISED = 'GEN-MAYBGTFO';
+    const CODE_FORBIDDEN = 'GEN-GTFO';
+    const CODE_INVALID_MIME_TYPE = 'GEN-UMWUT';
+    const CODE_CONFLICT = 'GEN-MULTIVERSE';
+    const CODE_VALIDATION = 'GEN-MALFORMED';
 
 	 /**
 	* @param Manager $fractal
@@ -21,6 +32,30 @@ class ApiController extends Controller {
 		    $this->fractal->parseIncludes($_GET['include']);
 		}
 	}
+
+	protected function getAuthenticatedUser()
+    {
+        try {
+
+            if (! $user = JWTAuth::parseToken()->toUser()) {
+                return response()->json(['user_not_found'], 404);
+            }
+
+        } catch (Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
+
+            return response()->json(['token_expired'], $e->getStatusCode());
+
+        } catch (Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
+
+            return response()->json(['token_invalid'], $e->getStatusCode());
+
+        } catch (Tymon\JWTAuth\Exceptions\JWTException $e) {
+
+            return response()->json(['token_absent'], $e->getStatusCode());
+
+        }
+		return $user;
+    }
 	
 	public function getStatusCode()
 	{
@@ -96,20 +131,22 @@ class ApiController extends Controller {
 	* @return \Symfony\Component\HttpFoundation\Response
 	*/
 	protected function respondWithError($message, $errorCode)
-	{
-		if($this->statusCode === 200)
-		{
-			trigger_error('You better have a good reason for triggering an error with a 200 status code', E_USER_WARNING);
-		}
-		
-		return $this->respondWithArray([
-			'error' => [
-				'code' => $errorCode,
-				'http_code' => $this->statusCode,
-				'message' => $message,
-			]
-		]);
-	}
+    {
+        if ($this->statusCode === 200) {
+            trigger_error(
+                "You better have a really good reason for erroring on a 200...",
+                E_USER_WARNING
+            );
+        }
+
+        return $this->respondWithArray([
+            'error' => [
+                'code' => $errorCode,
+                'http_code' => $this->statusCode,
+                'message' => $message,
+            ]
+        ]);
+    }
 	/**
 	*
 	* Generates a response with a 403 Forbidden header and Error message
@@ -152,6 +189,24 @@ class ApiController extends Controller {
 	protected function errorWrongArgs($message = 'Wrong Arguments')
 	{
 		return $this->setStatusCode(403)->respondWithError($message, Self::CODE_WRONG_ARGS);
+	}
+
+	/**
+	* @param string $message
+	* @return \Symfony\Component\HttpFoundation\Response
+	*/
+	protected function errorConflict($message = 'Duplicate Entry')
+	{
+		return $this->setStatusCode(409)->respondWithError($message, Self::CODE_CONFLICT);
+	}
+
+	/**
+	* @param string $message
+	* @return \Symfony\Component\HttpFoundation\Response
+	*/
+	protected function errorValidation($message = 'Your request held invalid or incomplete data')
+	{
+		return $this->setStatusCode(422)->respondWithError($message, Self::CODE_VALIDATION);
 	}
 
 }

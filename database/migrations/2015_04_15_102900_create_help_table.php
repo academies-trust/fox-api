@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateClassesTable extends Migration {
+class CreateHelpTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,10 +12,11 @@ class CreateClassesTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('classes', function(Blueprint $table)
+		Schema::create('help', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->integer('group_id')->unsigned();
+			$table->timestamps();
+			$table->softDeletes();
 		});
 	}
 
@@ -26,7 +27,7 @@ class CreateClassesTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('classes');
+		Schema::drop('help');
 	}
 
 }

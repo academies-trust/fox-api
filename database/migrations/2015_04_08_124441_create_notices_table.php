@@ -18,7 +18,8 @@ class CreateNoticesTable extends Migration {
 			$table->string('title');
 			$table->text('content');
 			$table->integer('group_id')->unsigned();
-			$table->binary('allow_comments');
+			$table->foreign('group_id')->references('id')->on('groups');
+			$table->boolean('allow_comments');
 		});
 	}
 

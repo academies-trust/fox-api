@@ -16,6 +16,7 @@ class CreateGradingsTable extends Migration {
 		{
 			$table->increments('id');
 			$table->integer('marking_scheme_id')->unsigned();
+			$table->foreign('marking_scheme_id')->references('id')->on('marking_schemes');
 			$table->string('name', 50);
 			$table->integer('grade')->unsigned();
 		});

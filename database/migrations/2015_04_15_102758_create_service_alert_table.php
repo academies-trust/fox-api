@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSitesTable extends Migration {
+class CreateServiceAlertTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,14 +12,10 @@ class CreateSitesTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('sites', function(Blueprint $table)
+		Schema::create('service_alert', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->string('name');
-			$table->string('slug',10)->unique();
-			$table->integer('domain_controller_id')->unsigned();
-			$table->string('hex_color',6);
-			$table->timestamps();
+			$table->timestamp('expires_at');
 		});
 	}
 
@@ -30,7 +26,7 @@ class CreateSitesTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('sites');
+		Schema::drop('service_alert');
 	}
 
 }

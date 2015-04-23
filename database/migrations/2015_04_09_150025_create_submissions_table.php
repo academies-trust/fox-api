@@ -16,11 +16,13 @@ class CreateSubmissionsTable extends Migration {
 		{
 			$table->increments('id');
 			$table->integer('owner_id')->unsigned();
+			$table->foreign('owner_id')->references('id')->on('users');
 			$table->integer('task_id')->unsigned();
-			$table->integer('grade')->unsigned();
-			$table->timestamp('read')->nullable();
-			$table->timestamp('submitted')->nullable();
-			$table->timestamp('marked')->nullable();
+			$table->foreign('task_id')->references('id')->on('tasks');
+			$table->integer('feedback_id')->unsigned()->references('id')->on('feedback')->nullable();
+			$table->timestamp('read_at')->nullable();
+			$table->timestamp('submitted_at')->nullable();
+			$table->timestamp('marked_at')->nullable();
 		});
 	}
 

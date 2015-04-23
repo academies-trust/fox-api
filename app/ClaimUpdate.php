@@ -4,6 +4,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class ClaimUpdate extends Model {
 
+	use SoftDeletes;
+
+    protected $dates = ['deleted_at'];
+
 	public function user() {
 		$this->belongsTo('App\Claim');
 	}

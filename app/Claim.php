@@ -4,6 +4,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Claim extends Model {
 
+	use SoftDeletes;
+
+    protected $dates = ['deleted_at', 'incident_at'];
+
 	public function user() {
 		$this->belongsTo('App\User');
 	}

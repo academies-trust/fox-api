@@ -16,8 +16,10 @@ class CreateClaimUpdatesTable extends Migration {
 		{
 			$table->increments('id');
 			$table->integer('claim_id')->unsigned();
+			$table->foreign('claim_id')->references('id')->on('claims');
 			$table->text('content')->nullable();
 			$table->integer('status_id')->unsigned();
+			$table->foreign('status_id')->references('id')->on('claim_statuses');
 			$table->softDeletes();
 			$table->timestamps();
 		});

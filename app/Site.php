@@ -4,6 +4,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Site extends Model {
 
+	public function domainController()
+	{
+		return $this->belongsTo('App\DomainController');
+	}
+
 	public function modules() {
 		return $this->hasMany('App\Module');
 	}
@@ -14,6 +19,11 @@ class Site extends Model {
 
 	public function siteUser() {
 		return $this->hasMany('App\SiteUser');
+	}
+
+	public function behaviourModels()
+	{
+		return $this->hasMany('App\BehaviourModel');
 	}
 
 }

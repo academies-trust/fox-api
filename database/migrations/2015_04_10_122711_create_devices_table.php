@@ -16,10 +16,12 @@ class CreateDevicesTable extends Migration {
 		{
 			$table->increments('id');
 			$table->integer('user_id')->unsigned();
+			$table->foreign('user_id')->references('id')->on('users');
 			$table->integer('enrol_count')->unsigned();
 			$table->string('serial', 15);
-			$table->binary('case');
+			$table->boolean('case');
 			$table->integer('scheme_id')->unsigned();
+			$table->foreign('scheme_id')->references('id')->on('device_schemes');
 			$table->softDeletes();
 			$table->timestamps();
 		});

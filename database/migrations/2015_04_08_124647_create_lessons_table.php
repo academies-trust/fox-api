@@ -16,6 +16,7 @@ class CreateLessonsTable extends Migration {
 		{
 			$table->increments('id');
 			$table->integer('class_id')->unsigned();
+			$table->foreign('class_id')->references('id')->on('classes');
 		});
 	}
 
