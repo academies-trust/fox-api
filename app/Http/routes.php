@@ -11,10 +11,13 @@
 |
 */
 
+
 ## Authentication
 
 Route::post('/signin', 'UserController@signin');
 Route::post('/signup', 'UserController@signup');
+
+
 
 ## Organisational Routes
 
@@ -54,17 +57,19 @@ Route::get('sites/{sites}', 'SiteController@show');
 Route::patch('sites/{sites}', 'SiteController@update');
 Route::delete('sites/{sites}', 'SiteController@destroy');
 
+Route::get('subjects', 'SubjectController@index');
+Route::post('subjects', 'SubjectController@store');
+Route::get('subjects/{subjects}', 'SubjectController@show');
+Route::patch('subjects/{subjects}', 'SubjectController@update');
+Route::delete('subjects/{subjects}', 'SubjectController@destroy');
+
 Route::get('users', 'UserController@index');
 Route::post('users', 'UserController@store');
 Route::get('users/{users}', 'UserController@show');
 Route::patch('users/{users}', 'UserController@update');
 Route::delete('users/{users}', 'UserController@destroy');
 
-Route::get('subjects', 'SubjectController@index');
-Route::post('subjects', 'SubjectController@store');
-Route::get('subjects/{subjects}', 'SubjectController@show');
-Route::patch('subjects/{subjects}', 'SubjectController@update');
-Route::delete('subjects/{subjects}', 'SubjectController@destroy');
+
 
 ## Modules
 

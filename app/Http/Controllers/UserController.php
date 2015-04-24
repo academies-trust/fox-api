@@ -6,6 +6,11 @@ use App\Http\Controllers\Controller;
 use adLDAP;
 use App\User;
 use JWTAuth;
+use League\Fractal\Resource\Collection;
+use League\Fractal\Resource\Item;
+use League\Fractal\Manager;
+use League\Fractal\Pagination\Cursor;
+use League\Fractal\Pagination\CursorInterface;
 
 use Illuminate\Http\Request;
 use Validator;
@@ -14,6 +19,17 @@ use Crypt;
 class UserController extends ApiController {
 
 	private $options = [];
+
+	public function __construct(Manager $fractal)
+	{
+		$this->fractal = $fractal;
+		if (isset($_GET['include'])) {
+		    $this->fractal->parseIncludes($_GET['include']);
+		}
+		if($this->middleware('checkToken', ['except' => ['signin', 'signup']])) {
+			$this->user = $this->getAuthenticatedUser();	
+		}
+	}
 
 	public function sync() {
 		$sites = \App\Site::all();
