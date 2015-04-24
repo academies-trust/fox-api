@@ -11,10 +11,8 @@ class SubmissionTransformer extends TransformerAbstract {
 	];
 
 	protected $availableIncludes = [
-		'group',
-		'comments',
-		'submissions',
-		'markingScheme',
+		'task',
+		'owner',
 		'feedback'
 	];
 
@@ -34,25 +32,15 @@ class SubmissionTransformer extends TransformerAbstract {
 		return $template;
 	}
 
-	public function includeGroup(Submission $submission)
+	public function includeTask(Submission $submission)
 	{
-		$group = $submission->group;
-		return $this->item($group, new GroupTransformer);
+		$task = $submission->task;
+		return $this->item($task, new TaskTransformer);
 	}
-	public function includeComments(Submission $submission)
+	public function includeOwner(Submission $submission)
 	{
-		$comments = $submission->comments;
-		return $this->collection($comments, new CommentTransformer);
-	}
-	public function includeSubmissions(Submission $submission)
-	{
-		$submissions = $submission->submissions;
-		return $this->collection($submissions, new SubmissionTransformer);
-	}	
-	public function includePost(Submission $submission)
-	{
-		$post = $submission->post;
-		return $this->item($post, new PostTransformer);
+		$owner = $submission->owner;
+		return $this->item($owner, new UserTransformer);
 	}
 	public function includeFeedback(Submission $submission)
 	{
