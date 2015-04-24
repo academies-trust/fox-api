@@ -13,4 +13,9 @@ class Feedback extends Model {
 		return $this->belongsTo('App\User', 'student_id');
 	}
 
+	public function group()
+	{
+		return $this->belongsTo('App\Group');
+	}
+
 }

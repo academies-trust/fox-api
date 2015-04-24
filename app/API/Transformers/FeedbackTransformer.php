@@ -10,6 +10,7 @@ class FeedbackTransformer extends TransformerAbstract {
 		'student',
 		'comments',
 		'markingScheme',
+		'group',
 	];
 
 	public function transform(Feedback $feedback)
@@ -43,5 +44,11 @@ class FeedbackTransformer extends TransformerAbstract {
 	{
 		$comments = $feedback->comments;
 		return $this->collection($comments, new CommentTransformer);
+	}
+
+	public function includeGroup(Feedback $feedback)
+	{
+		$group = $feedback->group;
+		return $this->item($group, new GroupTransformer);
 	}
 }

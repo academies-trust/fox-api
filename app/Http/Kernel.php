@@ -10,7 +10,8 @@ class Kernel extends HttpKernel {
 	 * @var array
 	 */
 	protected $middleware = [
-		'Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode'
+		'Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode',
+		'Barryvdh\Cors\Middleware\HandleCors',
 	];
 
 	/**
@@ -21,6 +22,7 @@ class Kernel extends HttpKernel {
 	protected $routeMiddleware = [
 		'jwt.auth' => 'Tymon\JWTAuth\Middleware\GetUserFromToken',
     	'jwt.refresh' => 'Tymon\JWTAuth\Middleware\RefreshToken',
+    	'checkToken' => '\App\Http\Middleware\checkToken',
 	];
 
 }

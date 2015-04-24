@@ -35,11 +35,6 @@ class DeviceTransformer extends TransformerAbstract {
 		$user = $device->user;
 		return $this->item($user, new UserTransformer);
 	}
-	public function includeStudent(Device $device)
-	{
-		$student = $device->student;
-		return $this->item($student, new UserTransformer);
-	}
 	public function includeDeviceModel(Device $device)
 	{
 		$deviceModel = $device->deviceModel;

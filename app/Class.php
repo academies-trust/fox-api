@@ -12,4 +12,8 @@ class Class extends Model {
 		return $this->hasMany('App\Lesson');
 	}
 
+	public function subject() {
+		return $this->belongsTo('App\Subject');
+	}
+
 }

@@ -22,6 +22,8 @@ class CreateFeedbacksTable extends Migration {
 			$table->integer('marking_scheme_id')->unsigned()->nullable();
 			$table->foreign('marking_scheme_id')->references('id')->on('marking_schemes');
 			$table->integer('grade')->unsigned()->nullable();
+			$table->integer('group_id')->unsigned()->nullable();
+			$table->foreign('group_id')->references('id')->on('groups');
 		});
 	}
 
