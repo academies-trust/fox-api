@@ -24,7 +24,43 @@ class RouteServiceProvider extends ServiceProvider {
 	{
 		parent::boot($router);
 
-		//
+		$router->model('articles', 'App\Article');
+		$router->model('behaviours', 'App\Behaviour');
+		$router->model('behaviourmodels', 'App\BehaviourModel');
+		$router->model('claims', 'App\Claim');
+		$router->model('claimstatuses', 'App\ClaimStatus');
+		$router->model('claimupdates', 'App\ClaimUpdate');
+		$router->model('classes', 'App\Class');
+		$router->model('comments', 'App\Comment');
+		$router->model('devices', 'App\Device');
+		$router->model('deviceschemes', 'App\DeviceScheme');
+		$router->model('domaincontrollers', 'App\DomainController');
+		$router->model('events', 'App\Event');
+		$router->model('feedbacks', 'App\Feedback');
+		$router->model('gradings', 'App\Grading');
+		$router->model('groups', 'App\Group');
+		$router->model('groupusers', 'App\GroupUser');
+		$router->model('helps', 'App\Help');
+		$router->model('helpcontents', 'App\HelpContent');
+		$router->model('insurances', 'App\Insurance');
+		$router->model('lessons', 'App\Lesson');
+		$router->model('markingschemes', 'App\MarkingScheme');
+		$router->model('modules', 'App\Module');
+		$router->model('notices', 'App\Notice');
+		$router->model('notifications', 'App\Notification');
+		$router->model('permissions', 'App\Permission');
+		$router->model('posts', 'App\Post');
+		$router->model('resources', 'App\Resource');
+		$router->model('roles', 'App\Role');
+		$router->model('schemes', 'App\Scheme');
+		$router->model('servicealerts', 'App\ServiceAlert');
+		$router->model('sites', 'App\Site');
+		$router->model('siteusers', 'App\SiteUser');
+		$router->model('subjects', 'App\Subject');
+		$router->model('submissions', 'App\Submission');
+		$router->model('tasks', 'App\Task');
+		$router->model('trusts', 'App\Trust');
+		$router->model('users', 'App\User');
 	}
 
 	/**

@@ -16,22 +16,30 @@ use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotAcceptableHttpException;
 use Response;
+use Illuminate\Http\Request;
+use Auth;
 
 class ApiController extends Controller {
 
 	protected 	$statusCode = 200,
-				$user;
+				$current = 0,
+				$per_page = 20,
+				$next,
+				$prev;
 
 	 /**
 	* @param Manager $fractal
 	*/
-	public function __construct(Manager $fractal)
+	public function __construct(Manager $fractal, Request $request)
 	{
 		$this->fractal = $fractal;
 		if (isset($_GET['include'])) {
 		    $this->fractal->parseIncludes($_GET['include']);
 		}
-		
+		$this->current = ($request->cursor) ? $request->cursor : $this->current;
+		$this->per_page = ($request->cursor) ? min((int) $request->number, 100) : $this->per_page;
+		$this->next = ($this->current + $this->per_page);
+		$this->prev = max(($this->current - $this->per_page), 0);
 	}
 
 	public function getAuthenticatedUser()

@@ -21,7 +21,10 @@ class SiteTransformer extends TransformerAbstract {
 		$template = [
 			'id'	=> $site['id'],
 			'name' 	=> $site['name'],
-			'email' 	=> $site['email'],
+			'slug' 	=> $site['slug'],
+			'color' => $site['hex_color'],
+			'type' => $site['type'],
+			'created' => $site['created_at'],
 			'links' => [
 				'rel' => 'self',
 				'uri' => '/sites/'.$site['id']

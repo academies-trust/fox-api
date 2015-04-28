@@ -1,15 +1,8 @@
 <?php namespace App\Http\Controllers;
 
-use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Post;
-use League\Fractal\Resource\Collection;
-use League\Fractal\Resource\Item;
-use League\Fractal\Manager;
-use League\Fractal\Pagination\Cursor;
-use League\Fractal\Pagination\CursorInterface;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+
 use Illuminate\Http\Request;
 
 class PostController extends ApiController {
@@ -21,21 +14,19 @@ class PostController extends ApiController {
 	 */
 	public function index(Request $request)
 	{
-		$current = $request->cursor ? (int) $request->cursor : 0;
-		$per_page = $request->number ? min((int) $request->number, 15) : 20;
-		$this->user->load(['groups.posts' => function ($q) use ( &$posts, $per_page, $current ) {
-		       $posts = $q->limit($per_page)
-		       			->skip($current)
+		
+		Auth::user()->load(['groups.posts' => function ($q) use ( &$posts, $this->per_page, $this->current ) {
+		       $posts = $q->limit($this->per_page)
+		       			->skip($this->current)
 		       			->get()
 		       			->unique();
 		}]);
 		if($posts) {
-			$next = ($current + $per_page);
-			$prev = max(($current - $per_page), 0);
-			$cursor = new Cursor($current, $prev, $next, $posts->count());
+			
+			$cursor = new Cursor($this->current, $this->prev, $this->next, $posts->count());
 			return $this->respondWithCursor($posts, new PostTransformer, $cursor);
 		}
-		throw new NotFoundHttpException('No posts found');
+		return $this->errorNotFound('No posts found');
 	}
 
 	/**
