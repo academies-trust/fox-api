@@ -4,6 +4,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Site extends Model {
 
+	protected $fillable = ['name', 'slug', 'domain_controller_id', 'hex_color', 'type', 'trust_id'];
+
 	public function domainController()
 	{
 		return $this->belongsTo('App\DomainController');

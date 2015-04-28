@@ -101,6 +101,12 @@ class ApiController extends Controller {
 		return Response::json($array, $this->statusCode, $headers);
 	}
 
+	public function respondSuccess($message = 'Action Successful')
+	{
+		$array = ['message' => $message];
+		return $this->respondWithArray($array);
+	}
+
 	/**
 	*
 	* Generates a response with a 403 Forbidden header and Error message

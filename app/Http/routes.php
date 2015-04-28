@@ -15,9 +15,10 @@
 ## Authentication
 
 Route::post('/signin', 'UserController@signin');
-Route::post('/signup', 'UserController@signup');
+//Route::post('/signup', 'UserController@signup');
+Route::get('/sync', 'UserController@sync');
 
-Route::group(['middleware' => 'checkToken'], function() {
+Route::group(['middleware' => ['checkToken' /*'jwt.refresh'*/]], function() {
 	## Organisational Routes
 
 	Route::get('classes', 'ClassController@index');

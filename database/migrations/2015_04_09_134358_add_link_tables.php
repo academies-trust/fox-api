@@ -31,7 +31,6 @@ class AddLinkTables extends Migration {
 			$table->foreign('user_id')->references('id')->on('users');
 			$table->integer('group_id')->unsigned();
 			$table->foreign('group_id')->references('id')->on('groups');
-			$table->unique('user_id', 'group_id');
 			$table->integer('permission_id')->unsigned();
 			$table->foreign('permission_id')->references('id')->on('permissions');
 		});
