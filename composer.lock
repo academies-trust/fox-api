@@ -2498,16 +2498,16 @@
         },
         {
             "name": "tymon/jwt-auth",
-            "version": "0.5.2",
+            "version": "0.5.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tymondesigns/jwt-auth.git",
-                "reference": "537599435e11e2d5a3de4619b2091d6f47611bc3"
+                "reference": "3e2624fbc59e979c69a25f407432b86c531faced"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tymondesigns/jwt-auth/zipball/537599435e11e2d5a3de4619b2091d6f47611bc3",
-                "reference": "537599435e11e2d5a3de4619b2091d6f47611bc3",
+                "url": "https://api.github.com/repos/tymondesigns/jwt-auth/zipball/3e2624fbc59e979c69a25f407432b86c531faced",
+                "reference": "3e2624fbc59e979c69a25f407432b86c531faced",
                 "shasum": ""
             },
             "require": {
@@ -2557,7 +2557,7 @@
                 "laravel",
                 "tymon"
             ],
-            "time": "2015-04-17 22:32:16"
+            "time": "2015-04-23 19:01:43"
         },
         {
             "name": "vlucas/phpdotenv",
@@ -2829,16 +2829,16 @@
         },
         {
             "name": "phpspec/prophecy",
-            "version": "1.4.0",
+            "version": "v1.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpspec/prophecy.git",
-                "reference": "8724cd239f8ef4c046f55a3b18b4d91cc7f3e4c5"
+                "reference": "3132b1f44c7bf2ec4c7eb2d3cb78fdeca760d373"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/8724cd239f8ef4c046f55a3b18b4d91cc7f3e4c5",
-                "reference": "8724cd239f8ef4c046f55a3b18b4d91cc7f3e4c5",
+                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/3132b1f44c7bf2ec4c7eb2d3cb78fdeca760d373",
+                "reference": "3132b1f44c7bf2ec4c7eb2d3cb78fdeca760d373",
                 "shasum": ""
             },
             "require": {
@@ -2885,7 +2885,7 @@
                 "spy",
                 "stub"
             ],
-            "time": "2015-03-27 19:31:25"
+            "time": "2015-04-27 22:15:08"
         },
         {
             "name": "phpunit/php-code-coverage",

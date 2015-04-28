@@ -7,16 +7,20 @@ use League\Fractal\Manager;
 use League\Fractal\Pagination\Cursor;
 use League\Fractal\Pagination\CursorInterface;
 use JWTAuth;
-use App\Exceptions\Handler;
 use App\User;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\FatalErrorException;
+use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\NotAcceptableHttpException;
 use Response;
 
 class ApiController extends Controller {
 
 	protected 	$statusCode = 200,
 				$user;
-
-	
 
 	 /**
 	* @param Manager $fractal
@@ -27,21 +31,13 @@ class ApiController extends Controller {
 		if (isset($_GET['include'])) {
 		    $this->fractal->parseIncludes($_GET['include']);
 		}
-		if($this->middleware('checkToken')) {
-			$this->user = $this->getAuthenticatedUser();	
-		}
-	}
-
-	public function checkToken() {
-		$this->middleware('checkToken');
+		
 	}
 
 	public function getAuthenticatedUser()
 	{
 	    return $user = JWTAuth::parseToken()->authenticate();
 	}
-
-
 
 	/**
 	*
@@ -95,6 +91,68 @@ class ApiController extends Controller {
 	public function respondWithArray(array $array, array $headers = [])
 	{
 		return Response::json($array, $this->statusCode, $headers);
+	}
+
+	/**
+	*
+	* Generates a response with a 403 Forbidden header and Error message
+	*
+	* @param string $message
+	* @return \Symfony\Component\HttpFoundation\Response
+	*/
+	public function errorForbidden($message = '')
+	{
+		throw new AccessDeniedHttpException($message);
+	}
+	/**
+	* @param string $message
+	* @return \Symfony\Component\HttpFoundation\Response
+	*/
+	public function errorInternalError($message = '')
+	{
+		throw new FatalErrorException($message);
+	}
+	/**
+	* @param string $message
+	* @return \Symfony\Component\HttpFoundation\Response
+	*/
+	public function errorNotFound($message = '')
+	{
+		throw new NotFoundHttpException($message);
+	}
+	/**
+	* @param string $message
+	* @return \Symfony\Component\HttpFoundation\Response
+	*/
+	public function errorUnauthorised($message = '')
+	{
+		throw new UnauthorizedHttpException($message);
+	}
+	/**
+	* @param string $message
+	* @return \Symfony\Component\HttpFoundation\Response
+	*/
+	public function errorWrongArgs($message = '')
+	{
+		throw new BadRequestHttpException($message);
+	}
+
+	/**
+	* @param string $message
+	* @return \Symfony\Component\HttpFoundation\Response
+	*/
+	public function errorConflict($message = '')
+	{
+		throw new ConflictHttpException($message);
+	}
+
+	/**
+	* @param string $message
+	* @return \Symfony\Component\HttpFoundation\Response
+	*/
+	public function errorValidation($message = '')
+	{
+		throw new NotAcceptableHttpException($message);
 	}
 
 }

@@ -64,15 +64,10 @@ class Handler extends ExceptionHandler {
 	{
 		if ($this->isHttpException($e))
         {
-        	if ($e instanceof ModelNotFoundException)
+        	if ($e instanceof ModelNotFoundException || $e instanceof NotFoundHttpException)
 	        {
 	        	$message = ($e->getMessage() == '') ? 'One or more resource was not found' : $e->getMessage();
 	            return $this->errorNotFound($message);
-	        }
-	        if ($e instanceof NotFoundHttpException)
-	        {
-	        	$message = ($e->getMessage() == '') ? 'One or more resource was not found' : $e->getMessage();
-	        	return $this->errorNotFound($message);
 	        }
 	        if ($e instanceof UnauthorizedHttpException)
 	        {

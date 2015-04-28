@@ -27,7 +27,7 @@ class UserController extends ApiController {
 		    $this->fractal->parseIncludes($_GET['include']);
 		}
 		if($this->middleware('checkToken', ['except' => ['signin', 'signup']])) {
-			$this->user = $this->getAuthenticatedUser();	
+			$this->user = $this->getAuthenticatedUser();
 		}
 	}
 
