@@ -9,7 +9,7 @@ class DomainControllersTableSeeder extends Seeder {
 		$faker = Faker::create('en_GB');
 		$dcs = [
 			['@hasla.org.uk', 'DC=hasla,DC=org,DC=uk', '8454612-DC01.hasla.org.uk', 'web.team', Crypt::encrypt('Hastings1'), 0, 389],
-			['@elphin.lan', 'ou=staff,dc=elphin,dc=lan', 'ldap://217.177.12.2', 'techadmin', Crypt::encrypt('fishcake'), 0, 389],
+			//['@elphin.lan', 'ou=staff,dc=elphin,dc=lan', 'ldap://217.177.12.2', 'techadmin', Crypt::encrypt('fishcake'), 0, 389],
 		];
 		foreach(range(1,count($dcs)) as $index)
 		{

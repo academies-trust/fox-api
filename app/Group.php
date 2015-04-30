@@ -26,4 +26,9 @@ class Group extends Model {
 		return $this->hasMany('App\GroupUser');
 	}
 
+	public function sites()
+	{
+		return $this->belongsToMany('App\Site');
+	}
+
 }

@@ -19,57 +19,61 @@ class UserController extends ApiController {
 	private $options = [];
 
 	public function sync() {
-		$sites = \App\Site::all();
-		foreach($sites as $site) {
-			$this->getUsers($site);
-			echo $site->name;
-		}
-	}
-
-	protected function getUsers($site) {
-		$alphas = range('A','Z');
-		foreach($alphas as $alpha) {
-			$this->getUsersByAlpha($site, $alpha);
-		}
-		echo ' - '.$alpha;
-	}
-
-	protected function getUsersByAlpha($site, $alpha) {
-		$dc = $site->domainController;
-		$this->options = [
-				'account_suffix' => $dc->account_suffix,
-				'base_dn' => $dc->base_dn,
-				'domain_controllers' => [$dc->domain_controller],
-				'admin_username' => $dc->admin_username,
-				'admin_password' => Crypt::decrypt($dc->admin_password),
-				'use_ssl' => (bool) $dc->use_ssl,
-				'ad_port' => $dc->ad_port,
+		$domainControllers = \App\DomainController::all();
+		foreach($domainControllers as $domainController) {
+			$this->options = [
+				'account_suffix' => $domainController->account_suffix,
+				'base_dn' => $domainController->base_dn,
+				'domain_controllers' => [$domainController->domain_controller],
+				'admin_username' => $domainController->admin_username,
+				'admin_password' => Crypt::decrypt($domainController->admin_password),
+				'use_ssl' => (bool) $domainController->use_ssl,
+				'ad_port' => $domainController->ad_port,
 			];
 
-		$adLDAP = new adLDAP($this->options);
+			$this->adLDAP = new adLDAP($this->options);
 
-		$users = $adLDAP->user()->all(false, $alpha.'*');
+			$this->getUsers($domainController);
+		}
+	}
+
+	protected function getUsers($domainController) {
+		$alphas = range('A','Z');
+		foreach($alphas as $alpha) {
+			$this->getUsersByAlpha($domainController, $alpha);
+		}
+	}
+
+	protected function getUsersByAlpha($domainController, $alpha) {
+		$users = $this->adLDAP->user()->all(false, $alpha.'*');
 		foreach($users as $user) {
 			if(stripos($user, $alpha) === 0) {
-				if($adLDAP->user()->inGroup($user, 'Fox_Student') || $adLDAP->user()->inGroup($user, 'Fox_Staff')) {
-					if($site->slug == 'tha' || $site->slug == 'tsla') {
-						if($adLDAP->user()->inGroup($user, 'Fox_TSLA') && $site->slug == 'tsla') {
-							$this->createADUser($adLDAP, $user, $site);
-						}
-						if($adLDAP->user()->inGroup($user, 'Fox_THA') && $site->slug == 'tha') {
-							$this->createADUser($adLDAP, $user, $site);
-						}
-					} else {
-						$this->createADUser($adLDAP, $user, $site);
+				$this->syncUser($domainController, $user);
+			}
+		}
+	}
+
+	protected function syncUser($domainController, $user)
+	{
+		if($this->adLDAP->user()->inGroup($user, 'Fox_Student') || $this->adLDAP->user()->inGroup($user, 'Fox_Staff')) {
+			$sites = $domainController->sites()->get();
+			foreach($sites as $site)
+			{
+				if($this->adLDAP->user()->inGroup($user, 'Fox_'.strtoupper($site->slug)))
+				{
+					$rUser = $this->createADUser($user, $site);
+					if($rUser) {
+						$this->syncUserSites($rUser);
 					}
+					break 1;
 				}
 			}
 		}
 	}
 
-	protected function createADUser($adLDAP, $user, $site)
+	protected function createADUser($user, $site)
 	{
-		$userinfo = $adLDAP->user()->info($user);
+		$userinfo = $this->adLDAP->user()->info($user);
 		if(isset($userinfo[0]['mail'][0])) {
 			$email  	= strtolower($userinfo[0]['mail'][0]);
 			$currentUser = User::where('email', $email)->get();
@@ -77,31 +81,103 @@ class UserController extends ApiController {
 				
 	        	$display 	= $userinfo[0]['displayname'][0];
 	        	$auth_site 	= $site->id;
-	    		$newUser = User::create([
+	    		$currentUser = User::create([
 	    			'name' => $display,
 	    			'email' => $email,
 	    			'username' => $user,
 	    			'auth_site_id' => $auth_site,
 	    			'password' => bcrypt('temporary'),
 	    		]);
-	    		if($newUser) {
-	    			if($adLDAP->user()->inGroup($user, 'Fox_Staff')) {
-	    				$newUser->siteUser()->create([
-	    					'site_id' => $auth_site,
-	    					'user_id' => $newUser->id,
-	    					'role_id' => 1
-	    				]);
-	    			}
-	    			if($adLDAP->user()->inGroup($user, 'Fox_Student')) {
-	    				$newUser->siteUser()->create([
-	    					'site_id' => $auth_site,
-	    					'user_id' => $newUser->id,
-	    					'role_id' => 2
-	    				]);
-	    			}
+	    		if($currentUser) {
+	    			return $currentUser;
+	    		} else {
+	    			// TBD Log error - unable to create user
+	    		}
+	    	} else {
+	    		return $currentUser->first();
+	    	}
+		} else {
+			// TBD Log error - AD Account doesn't have email address
+		}
+	}
+
+	protected function syncUserSites(User $user)
+	{
+		if($this->adLDAP->user()->inGroup($user->username, 'Fox_Staff')) {
+    		$role = 1;
+    	}
+    	if($this->adLDAP->user()->inGroup($user->username, 'Fox_Student')) {
+    		$role = 2;
+    	}
+    	if($role)
+    	{
+    		$sites = $user->sites()->get()->lists('id');
+	    	$adSites = [];
+	    	foreach(\App\Site::all() as $uSite)
+	    	{
+	    		if($this->adLDAP->user()->inGroup($user->username, 'Fox_'.strtoupper($uSite->slug))) {
+		    		array_push($adSites, $uSite->id);
+		    	}	
+	    	}
+	    	foreach($adSites as $adSite)
+	    	{
+	    		if(!in_array($adSite, $sites)) {
+	    			$this->addSiteUser($user->id, $adSite, $role);
 	    		}
 	    	}
+	    	foreach($sites as $uSite) {
+	    		if(!in_array($uSite, $adSites)) {
+	    			$this->removeSiteUser($user->id, $adSite, $role);
+	    		}
+	    	}
+    	}
+	}
+
+	public function addSiteUser($user_id, $site_id, $role_id) {
+		$siteUser = \App\SiteUser::create([
+			'user_id' => $user_id,
+			'site_id' => $site_id,
+			'role_id' => $role_id,
+		]);
+		$this->addDefaultGroups($user_id, $site_id, $role_id);
+	}
+
+	public function removeSiteUser($user_id, $site_id, $role_id) {
+		$siteUser = \App\SiteUser::delete()->where('user_id', $user_id)->where('site_id', $site_id)->where('role_id', $role_id);
+		$remainingSU = \App\SiteUser::where('user_id', $user_id)->where('site_id', $site_id)->count();
+		if($remainingSU === 0)
+		{
+			$this->removeSiteGroups($user_id, $site_id);
 		}
+	}
+
+	public function addDefaultGroups($user_id, $site_id, $role_id)
+	{
+		$groups = \App\Site::find($site_id)->defaultGroups()->get()->lists('id');
+		switch ($role_id) {
+			case '1':
+				$permission_id = 3;
+				break;
+			
+			case '2':
+				$permission_id = 4;
+				break;
+		}
+		$user = User::find($user_id);
+
+		foreach($groups as $group)
+		{
+			$user->groups()->attach($group, ['permission_id' => $permission_id]);
+		}
+	}
+
+	protected function removeSiteGroups($user_id, $site_id)
+	{
+		$groups = \App\User::find($user_id)->groups()->whereHas('sites', function($q)
+		{
+			$q->where('id', $site_id);
+		})->get()->lists('id');
+		$user->groups()->detach($groups);
 	}
 
 	public function signin(Request $request)
@@ -190,12 +266,13 @@ class UserController extends ApiController {
 				'ad_port' => $dc->ad_port,
 			];
 
-		$adLDAP = new adLDAP($this->options);
+		$this->adLDAP = new adLDAP($this->options);
 
-		if($adLDAP->authenticate($user->username, $request->password))
+		if($this->adLDAP->authenticate($user->username, $request->password))
 		{
 			$user->password = bcrypt($request->password);
 			$user->save();
+			$this->syncSites($this->adLDAP, $user->username);
 		} else {
 			return 'failed auth';
 		}
@@ -208,16 +285,6 @@ class UserController extends ApiController {
 	 */
 	public function index()
 	{
-	}
-
-	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return Response
-	 */
-	public function create()
-	{
-		//
 	}
 
 	/**
@@ -237,17 +304,6 @@ class UserController extends ApiController {
 	 * @return Response
 	 */
 	public function show($id)
-	{
-		//
-	}
-
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function edit($id)
 	{
 		//
 	}

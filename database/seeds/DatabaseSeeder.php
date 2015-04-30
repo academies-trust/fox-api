@@ -8,6 +8,8 @@ use App\Site;
 use App\User;
 use App\SiteUser;
 use App\Role;
+use App\Permission;
+use App\Module;
 
 class DatabaseSeeder extends Seeder {
 
@@ -26,7 +28,8 @@ class DatabaseSeeder extends Seeder {
 		Site::truncate();
 		User::truncate();
 		Role::truncate();
-
+		Permission::truncate();
+		Module::truncate();
 
 		DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
@@ -37,6 +40,8 @@ class DatabaseSeeder extends Seeder {
 		$this->call('UsersTableSeeder');
 		$this->call('RolesTableSeeder');
 		$this->call('SiteUserTableSeeder');
+		$this->call('ModulesTableSeeder');
+		$this->call('PermissionsTableSeeder');
 	}
 
 }

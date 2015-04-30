@@ -6,4 +6,9 @@ class DomainController extends Model {
 
 	public $timestamps = false;
 
+	public function sites()
+	{
+		return $this->hasMany('App\Site');
+	}
+
 }

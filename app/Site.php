@@ -28,4 +28,14 @@ class Site extends Model {
 		return $this->hasMany('App\BehaviourModel');
 	}
 
+	public function groups()
+	{
+		return $this->belongsToMany('App\Group');
+	}
+
+	public function defaultGroups()
+	{
+		return $this->belongsToMany('App\Group')->where('default','1');
+	}
+
 }

@@ -90,5 +90,23 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	{
 		return $this->belongsToMany('App\Permission', 'group_user');
 	}
+	public function isStaff($site)
+	{
+		return $this->checkIfRole($site, 'staff');
+	}
+	public function isStudent($site)
+	{
+		return $this->checkIfRole($site, 'student');
+	}
+	public function checkIfRole($site, $role)
+	{
+		if(!is_int($site)) {
+			$site = App\Site::where('slug',$site)->first()->id;
+		}
+		return $this->siteUser()->whereHas('role', function($q)
+		{
+			$q->where('name', $role);
+		})->count();
+	}
 
 }

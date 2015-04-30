@@ -17,7 +17,8 @@ class CreateGroupsTable extends Migration {
 			$table->increments('id');
 			$table->string('name', 150);
 			$table->boolean('open');
-			$table->boolean('service_provider');
+			$table->boolean('service_provider')->default(0);
+			$table->boolean('default')->default(0);
 			$table->softDeletes();
 			$table->timestamps();
 		});
