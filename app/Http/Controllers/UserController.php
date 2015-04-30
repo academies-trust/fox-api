@@ -56,24 +56,47 @@ class UserController extends ApiController {
 	protected function syncUser($domainController, $user)
 	{
 		if($this->adLDAP->user()->inGroup($user, 'Fox_Student') || $this->adLDAP->user()->inGroup($user, 'Fox_Staff')) {
-			$sites = $domainController->sites()->get();
-			foreach($sites as $site)
+			if($this->isDisabled($user))
 			{
-				if($this->adLDAP->user()->inGroup($user, 'Fox_'.strtoupper($site->slug)))
-				{
-					$rUser = $this->createADUser($user, $site);
-					if($rUser) {
-						$this->syncUserSites($rUser);
+				$userinfo = $this->getADInfo($user);
+				if(isset($userinfo[0]['mail'][0])) {
+					$user = User::where('email', $userinfo[0]['mail'][0])->first();
+					if($user)
+					{
+						$this->deleteUser($user);
 					}
-					break 1;
+				}
+			} else {
+				$sites = $domainController->sites()->get();
+				foreach($sites as $site)
+				{
+					if($this->adLDAP->user()->inGroup($user, 'Fox_'.strtoupper($site->slug)))
+					{
+						$rUser = $this->createADUser($user, $site);
+						if($rUser) {
+							$this->syncUserSites($rUser);
+						}
+						break 1;
+					}
 				}
 			}
 		}
 	}
 
+	protected function getADInfo($user)
+	{
+		return $this->adLDAP->user()->info($user);
+	}
+
+	protected function isDisabled($user)
+	{
+		$user_info=	$this->adLDAP->user()->info($user,array("useraccountcontrol"));
+		return (($user_info[0]['useraccountcontrol'][0] & 2) == 1);
+	}
+
 	protected function createADUser($user, $site)
 	{
-		$userinfo = $this->adLDAP->user()->info($user);
+		$userinfo = $this->getADInfo($user);
 		if(isset($userinfo[0]['mail'][0])) {
 			$email  	= strtolower($userinfo[0]['mail'][0]);
 			$currentUser = User::where('email', $email)->get();
@@ -142,12 +165,22 @@ class UserController extends ApiController {
 		$this->addDefaultGroups($user_id, $site_id, $role_id);
 	}
 
-	public function removeSiteUser($user_id, $site_id, $role_id) {
-		$siteUser = \App\SiteUser::delete()->where('user_id', $user_id)->where('site_id', $site_id)->where('role_id', $role_id);
+	public function removeSiteUser($user_id, $site_id, $role_id = null) {
+		if($role_id)
+		{
+			$this->removeSiteUserByRole($user_id, $site_id, $role_id);
+		} else {
+			$siteUsers = \App\SiteUser::where('user_id', $user_id)->where('site_id', $site_id)->delete();
+		}
+	}
+
+	public function removeSiteUserByRole($user_id, $site_id, $role_id)
+	{
+		$siteUser = \App\SiteUser::where('user_id', $user_id)->where('site_id', $site_id)->where('role_id', $role_id)->delete();
 		$remainingSU = \App\SiteUser::where('user_id', $user_id)->where('site_id', $site_id)->count();
 		if($remainingSU === 0)
 		{
-			$this->removeSiteGroups($user_id, $site_id);
+			$this->removeUserGroupsBySite($user_id, $site_id);
 		}
 	}
 
@@ -171,13 +204,24 @@ class UserController extends ApiController {
 		}
 	}
 
-	protected function removeSiteGroups($user_id, $site_id)
+	protected function removeUserGroupsBySite($user_id, $site_id)
 	{
-		$groups = \App\User::find($user_id)->groups()->whereHas('sites', function($q)
+		$groups = \App\User::find($user_id)->groups()->whereHas('sites', function($q) use ($site_id)
 		{
 			$q->where('id', $site_id);
 		})->get()->lists('id');
-		$user->groups()->detach($groups);
+
+		User::find($user_id)->groups()->detach($groups);
+	}
+
+	protected function deleteUser(User $user)
+	{
+		foreach($user->sites()->get() as $site)
+		{
+			$this->removeUserGroupsBySite($user->id, $site->id);
+			$this->removeSiteUser($user->id, $site->id);
+		}
+		$user->delete();
 	}
 
 	public function signin(Request $request)
