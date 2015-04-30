@@ -245,7 +245,6 @@ class UserController extends ApiController {
 	}
 
 	public function findUser($username, $site = null) {
-
 		if(filter_var($username, FILTER_VALIDATE_EMAIL)) {
 	        $user = User::where('email', $username);
 	    } else {
@@ -323,55 +322,71 @@ class UserController extends ApiController {
 	}
 
 	/**
-	 * Display a listing of the resource.
-	 *
-	 * @return Response
-	 */
-	public function index()
-	{
-	}
-
-	/**
 	 * Store a newly created resource in storage.
 	 *
 	 * @return Response
 	 */
 	public function store()
 	{
-		//
+		// not yet required!
 	}
 
 	/**
 	 * Display the specified resource.
 	 *
-	 * @param  int  $id
+	 * @param  User $user
 	 * @return Response
 	 */
-	public function show($id)
+	public function show()
 	{
-		//
+		return $this->respondWithItem(Auth::user(), new UserTransformer);
 	}
 
 	/**
 	 * Update the specified resource in storage.
 	 *
-	 * @param  int  $id
+	 * @param   User $user
 	 * @return Response
 	 */
-	public function update($id)
+	public function update(Request $request)
 	{
-		//
+		$user = Auth::user();
+		if($request->input)
+		{
+			$validator = Validator::make(
+				$request->all(),
+				[
+					'password' => 'required',
+					'new_password' => 'sometimes | required | confirmed'
+				]
+			);
+			if($validator->passes()) {
+				$user->password = ($request->new_password) ? bcrypt($request->new_password) : $user->password;
+				if($user->save())
+				{
+					return $this->respondWithItem($user, new UserTransformer);
+				} else {
+					return $this->errorInternal('Failed to update user');
+				}
+			} else {
+				return $this->errorValidation($validator->messages);
+			}
+		}
+		return $user;
 	}
 
 	/**
 	 * Remove the specified resource from storage.
 	 *
-	 * @param  int  $id
+	 * @param   User $user
 	 * @return Response
 	 */
-	public function destroy($id)
+	public function destroy()
 	{
-		//
+		if(Auth::user()->delete())
+		{
+			return $this->respondSuccess('User Deleted');
+		}
 	}
 
 }

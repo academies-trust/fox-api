@@ -63,11 +63,9 @@ Route::group(['middleware' => ['checkToken' /*'jwt.refresh'*/]], function() {
 	Route::patch('subjects/{subjects}', 'SubjectController@update');
 	Route::delete('subjects/{subjects}', 'SubjectController@destroy');
 
-	Route::get('users', 'UserController@index');
-	Route::post('users', 'UserController@store');
-	Route::get('users/{users}', 'UserController@show');
-	Route::patch('users/{users}', 'UserController@update');
-	Route::delete('users/{users}', 'UserController@destroy');
+	Route::post('users', 'UserController@update');
+	Route::get('users', 'UserController@show');
+	Route::delete('users', 'UserController@destroy');
 
 
 

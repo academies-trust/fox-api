@@ -30,6 +30,9 @@ class UserTransformer extends TransformerAbstract {
 			'name' 	=> $user['name'],
 			'email' 	=> $user['email'],
 			'username' 	=> $user['username'],
+			'created' 	=> $user['created_at'],
+			'updated' 	=> $user['updated_at'],
+			'deleted' 	=> $user['deleted_at'],
 			'links' => [
 				'rel' => 'self',
 				'uri' => '/users/'.$user['id']
