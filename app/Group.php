@@ -13,6 +13,11 @@ class Group extends Model {
 		return $this->belongsToMany('App\Module', 'module_group');
 	}
 
+	public function events()
+	{
+		return $this->hasMany('App\Event');
+	}
+
 	public function posts() {
 		return $this->hasMany('App\Post');
 	}

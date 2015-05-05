@@ -4,11 +4,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Event extends Model {
 
-	protected $dates = ['starts_at', 'ends_at'];
+	protected 	$dates = ['starts_at', 'ends_at'],
+				$fillable = ['starts_at', 'ends_at', 'group_id', 'allow_comments'];
+	public 		$timestamps = false;
 
-	public function posts()
+	public function post()
 	{
-		return $this->morphMany('App\Post', 'postable');
+		return $this->morphOne('App\Post', 'postable');
 	}
 
 	public function eventable()

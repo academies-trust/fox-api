@@ -315,7 +315,6 @@ class UserController extends ApiController {
 		{
 			$user->password = bcrypt($request->password);
 			$user->save();
-			$this->syncSites($this->adLDAP, $user->username);
 		} else {
 			return 'failed auth';
 		}

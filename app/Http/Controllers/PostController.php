@@ -30,67 +30,29 @@ class PostController extends ApiController {
 	}
 
 	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return Response
-	 */
-	public function create()
-	{
-		//
-	}
-
-	/**
-	 * Store a newly created resource in storage.
-	 *
-	 * @return Response
-	 */
-	public function store()
-	{
-		//
-	}
-
-	/**
 	 * Display the specified resource.
 	 *
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function show($id)
+	public function show(Post $post)
 	{
-		//
+		//is this controller really necessary?
 	}
 
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function edit($id)
+	public function includeType(Post $post)
 	{
-		//
+        $type = $post->postable;
+        $transformer = getTransformer($type, 'App\API\Transformers\\');
+        return $this->respondWithItem($type, new $transformer);
 	}
 
-	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function update($id)
+	function getTransformer($type, $namespace)
 	{
-		//
+	    return $namespace .
+	        join('', array_slice(explode('\\', $type), -1)) .
+	        'Transformer';
 	}
 
-	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function destroy($id)
-	{
-		//
-	}
 
 }
