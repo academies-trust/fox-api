@@ -20,10 +20,10 @@ class Post extends Model {
 		return $this->where('postable_type','App\Event')->morphTo();
 	}
 
-	public function lesson()
+	/*public function lesson()
 	{
 		return $this->where('postable_type','App\Lesson')->morphTo();
-	}
+	}*/
 
 	public function article()
 	{

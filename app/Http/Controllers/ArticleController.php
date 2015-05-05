@@ -12,9 +12,9 @@ use Validator;
 use App\API\transformers\PostTransformer;
 use Illuminate\Http\Request;
 use App\Post;
-use App\Event;
+use App\Article;
 
-class EventController extends ApiController {
+class ArticleController extends ApiController {
 
 	/**
 	 * Display a listing of the resource.
@@ -23,7 +23,7 @@ class EventController extends ApiController {
 	 */
 	public function index(Request $request)
 	{
-		Auth::user()->load(['groups.posts.event.post' => function ($q) use ( &$posts) {
+		Auth::user()->load(['groups.posts.article.post' => function ($q) use ( &$posts) {
 		       $posts = $q->limit($this->per_page)
 		       			->skip($this->current)
 		       			->get()
@@ -33,7 +33,7 @@ class EventController extends ApiController {
 			$cursor = new Cursor($this->current, $this->prev, $this->next, $posts->count());
 			return $this->respondWithCursor($posts, new PostTransformer, $cursor);
 		}
-		return $this->errorNotFound('No events found');
+		return $this->errorNotFound('No articles found');
 	}
 
 	/**
@@ -48,9 +48,9 @@ class EventController extends ApiController {
 			[
 				// post
 				'published' => 'required|date|before:end',
-				// event
-				'start' => 'required|date',
-				'end' => 'required|date|after:start',
+				// article
+				'title' => 'required|min:3|max:255',
+				'content' => 'required',
 				'group' => 'required|integer',
 				'comments' => 'required|boolean',
 			]
@@ -58,24 +58,18 @@ class EventController extends ApiController {
 		if($validator->passes())
 		{
 			// TBD check user has write access to group
-			$event = Event::create([
-				'starts_at' => $request->start,
-				'ends_at' => $request->end,
+			$article = Article::create([
+				'title' => $request->title,
+				'content' => $request->content,
 				'group_id' => (int) $request->group,
 				'allow_comments' => (bool) $request->comments
 			]);
 			$post = Post::create([
 				'user_id' => Auth::user()->id,
 				'published_at' => $request->published,
-				'postable_type' => 'App\Event',
-				'postable_id' => $event->id
+				'postable_type' => 'App\Article',
+				'postable_id' => $article->id
 			]);
-			if($post && $event)
-			{
-				return $this->respondWithItem($post, new PostTransformer)
-			} else {
-				return $this->errorInternal('Could not create post');
-			}
 			
 		} else {
 			return $this->errorValidation($validator->messages);
@@ -90,13 +84,13 @@ class EventController extends ApiController {
 	 */
 	public function show(Post $post)
 	{
-		Auth::user()->load(['groups.posts.event.post' => function ($q) use ( &$events ) {
-		    $events = $q->get()->unique();
+		Auth::user()->load(['groups.posts.article.post' => function ($q) use ( &$articles ) {
+		    $articles = $q->get()->unique();
 		}]);
-		if($events->contains($post)) {
+		if($articles->contains($post->article)) {
 			return $this->respondWithItem($post, new PostTransformer);	
 		} else {
-			return $this->errorNotFound('Event not found');	
+			return $this->errorNotFound('Article not found');	
 		}
 	}
 
@@ -113,9 +107,9 @@ class EventController extends ApiController {
 			[
 				// post
 				'published' => 'sometimes|date',
-				// event
-				'start' => 'sometimes|date',
-				'end' => 'sometimes|date',
+				// article
+				'title' => 'sometimes|max:255|min:3',
+				'content' => 'sometimes',
 				'group' => 'sometimes|integer',
 				'comments' => 'sometimes',
 			]
@@ -123,19 +117,19 @@ class EventController extends ApiController {
 		if($validator->passes())
 		{
 			// TBD check user has write access to group
-			$event = $post->event;
+			$article = $post->article;
 
-			$event->starts_at = ($request->start) ? $request->start : $event->starts_at;
-			$event->ends_at = ($request->end) ? $request->end : $event->ends_at;
-			$event->allow_comments = ($request->comments) ? (bool) $request->comments : $event->allow_comments;
-			$event->group_id = ($request->group) ? (bool) $request->group : $event->group_id;
+			$article->title = ($request->title) ? $request->title : $article->title;
+			$article->content = ($request->content) ? $request->content : $article->content;
+			$article->allow_comments = ($request->comments) ? (bool) $request->comments : $article->allow_comments;
+			$article->group_id = ($request->group) ? (bool) $request->group : $article->group_id;
 
-			$event->save();
-			if($event->save())
+			$article->save();
+			if($article->save())
 			{
-				return $this->respondWithItem($post, new PostTransformer);
+				return $this->respondWithItem($article->post, new PostTransformer);
 			} else {
-				return $this->errorInternal('Unable to update event');
+				return $this->errorInternal('Unable to update article');
 			}
 			
 		} else {
@@ -152,7 +146,7 @@ class EventController extends ApiController {
 	public function destroy(Post $post)
 	{
 		if($post->delete()) {
-			return $this->respondSuccess('Event Deleted');
+			return $this->respondSuccess('Article Deleted');
 		}
 	}
 
