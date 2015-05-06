@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateHelpContentTable extends Migration {
+class CreateArticleContentTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,14 +12,13 @@ class CreateHelpContentTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('help_content', function(Blueprint $table)
+		Schema::create('article_content', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->integer('help_id')->unsigned();
-			$table->foreign('help_id')->references('id')->on('help');
+			$table->integer('article_id')->unsigned();
+			$table->foreign('article_id')->references('id')->on('articles');
 			$table->string('title');
 			$table->text('content');
-			$table->boolean('active');
 			$table->timestamp('approved_at');
 			$table->integer('approved_by')->unsigned();
 			$table->foreign('approved_by')->references('id')->on('users');
@@ -37,7 +36,7 @@ class CreateHelpContentTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('help_content');
+		Schema::drop('article_content');
 	}
 
 }

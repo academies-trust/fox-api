@@ -12,29 +12,9 @@ use Validator;
 use App\API\transformers\PostTransformer;
 use Illuminate\Http\Request;
 use App\Post;
-use App\Article;
+use App\Comment;
 
-class ArticleController extends ApiController {
-
-	/**
-	 * Display a listing of the resource.
-	 *
-	 * @return Response
-	 */
-	public function index(Request $request)
-	{
-		Auth::user()->load(['groups.posts.article.post' => function ($q) use ( &$posts) {
-		       $posts = $q->limit($this->per_page)
-		       			->skip($this->current)
-		       			->get()
-		       			->unique();
-		}]);
-		if($posts) {
-			$cursor = new Cursor($this->current, $this->prev, $this->next, $posts->count());
-			return $this->respondWithCursor($posts, new PostTransformer, $cursor);
-		}
-		return $this->errorNotFound('No articles found');
-	}
+class CommentController extends ApiController {
 
 	/**
 	 * Store a newly created resource in storage.
@@ -48,34 +28,27 @@ class ArticleController extends ApiController {
 			[
 				// post
 				'published' => 'required|date|before:end',
-				// article
+				// comment
 				'title' => 'required|min:3|max:255',
 				'content' => 'required',
 				'group' => 'required|integer',
 				'comments' => 'required|boolean',
-				'help' => 'boolean'
 			]
 		);
 		if($validator->passes())
 		{
-			$help = ($request->help && \App\Group::find($group_id)->service_provider === 1);
 			// TBD check user has write access to group
-			$article = Article::create([
-				'group_id' => (int) $request->group,
-				'allow_comments' => (bool) $request->comments,
-				'help'	=> (bool) $help,
-			]);
-			$content = $article->content()->create([
+			$comment = Comment::create([
 				'title' => $request->title,
 				'content' => $request->content,
-				'parent_id' => $article->id,
-				'user_id' => Auth::user()->id,
+				'group_id' => (int) $request->group,
+				'allow_comments' => (bool) $request->comments
 			]);
 			$post = Post::create([
 				'user_id' => Auth::user()->id,
 				'published_at' => $request->published,
-				'postable_type' => 'App\Article',
-				'postable_id' => $article->id
+				'postable_type' => 'App\Comment',
+				'postable_id' => $comment->id
 			]);
 			
 		} else {
@@ -91,13 +64,13 @@ class ArticleController extends ApiController {
 	 */
 	public function show(Post $post)
 	{
-		Auth::user()->load(['groups.posts.article.post' => function ($q) use ( &$articles ) {
-		    $articles = $q->get()->unique();
+		Auth::user()->load(['groups.posts.comment.post' => function ($q) use ( &$comments ) {
+		    $comments = $q->get()->unique();
 		}]);
-		if($articles->contains($post->article)) {
+		if($comments->contains($post->comment)) {
 			return $this->respondWithItem($post, new PostTransformer);	
 		} else {
-			return $this->errorNotFound('Article not found');	
+			return $this->errorNotFound('Comment not found');	
 		}
 	}
 
@@ -114,7 +87,7 @@ class ArticleController extends ApiController {
 			[
 				// post
 				'published' => 'sometimes|date',
-				// article
+				// comment
 				'title' => 'sometimes|max:255|min:3',
 				'content' => 'sometimes',
 				'group' => 'sometimes|integer',
@@ -124,19 +97,19 @@ class ArticleController extends ApiController {
 		if($validator->passes())
 		{
 			// TBD check user has write access to group
-			$article = $post->article;
+			$comment = $post->comment;
 
-			$article->title = ($request->title) ? $request->title : $article->title;
-			$article->content = ($request->content) ? $request->content : $article->content;
-			$article->allow_comments = ($request->comments) ? (bool) $request->comments : $article->allow_comments;
-			$article->group_id = ($request->group) ? (bool) $request->group : $article->group_id;
+			$comment->title = ($request->title) ? $request->title : $comment->title;
+			$comment->content = ($request->content) ? $request->content : $comment->content;
+			$comment->allow_comments = ($request->comments) ? (bool) $request->comments : $comment->allow_comments;
+			$comment->group_id = ($request->group) ? (bool) $request->group : $comment->group_id;
 
-			$article->save();
-			if($article->save())
+			$comment->save();
+			if($comment->save())
 			{
-				return $this->respondWithItem($article->post, new PostTransformer);
+				return $this->respondWithItem($comment->post, new PostTransformer);
 			} else {
-				return $this->errorInternal('Unable to update article');
+				return $this->errorInternal('Unable to update comment');
 			}
 			
 		} else {
@@ -153,7 +126,7 @@ class ArticleController extends ApiController {
 	public function destroy(Post $post)
 	{
 		if($post->delete()) {
-			return $this->respondSuccess('Article Deleted');
+			return $this->respondSuccess('Comment Deleted');
 		}
 	}
 

@@ -95,13 +95,11 @@ Route::group(['middleware' => ['checkToken' /*'jwt.refresh'*/]], function() {
 	Route::patch('claims/{claims}', 'ClaimController@update');
 	Route::delete('claims/{claims}', 'ClaimController@destroy');
 
-	Route::get('claimupdates', 'ClaimUpdatesController@index');
 	Route::post('claimupdates', 'ClaimUpdatesController@store');
 	Route::get('claimupdates/{claimupdates}', 'ClaimUpdatesController@show');
 	Route::patch('claimupdates/{claimupdates}', 'ClaimUpdatesController@update');
 	Route::delete('claimupdates/{claimupdates}', 'ClaimUpdatesController@destroy');
 
-	Route::get('comments', 'CommentController@index');
 	Route::post('comments', 'CommentController@store');
 	Route::get('comments/{comments}', 'CommentController@show');
 	Route::patch('comments/{comments}', 'CommentController@update');
@@ -143,7 +141,6 @@ Route::group(['middleware' => ['checkToken' /*'jwt.refresh'*/]], function() {
 	Route::patch('help/{help}', 'HelpController@update');
 	Route::delete('help/{help}', 'HelpController@destroy');
 
-	Route::get('helpcontents', 'HelpContentController@index');
 	Route::post('helpcontents', 'HelpContentController@store');
 	Route::get('helpcontents/{helpcontents}', 'HelpContentController@show');
 	Route::patch('helpcontents/{helpcontents}', 'HelpContentController@update');

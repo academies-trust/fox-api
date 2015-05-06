@@ -27,17 +27,12 @@ class Post extends Model {
 
 	public function article()
 	{
-		return $this->where('postable_type','App\Article')->morphTo();
+		return $this->where('postable_type','App\Article')->morphTo()->whereNotNull('content_id');
 	}
 
 	public function comment()
 	{
 		return $this->where('postable_type','App\Comment')->morphTo();
-	}
-
-	public function help()
-	{
-		return $this->where('postable_type','App\Help')->morphTo();
 	}
 
 	public function notice()

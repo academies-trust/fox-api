@@ -9,6 +9,11 @@ class Article extends Model {
 		return $this->morphMany('App\Post', 'postable');
 	}
 
+	public function content()
+	{
+		return $this->hasMany('App\ArticleContent');
+	}
+
 	public function group() {
 		return $this->belongsTo('App\Group');
 	}
