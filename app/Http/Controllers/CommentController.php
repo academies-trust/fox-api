@@ -99,10 +99,10 @@ class CommentController extends ApiController {
 			// TBD check user has write access to group
 			$comment = $post->comment;
 
-			$comment->title = ($request->title) ? $request->title : $comment->title;
-			$comment->content = ($request->content) ? $request->content : $comment->content;
-			$comment->allow_comments = ($request->comments) ? (bool) $request->comments : $comment->allow_comments;
-			$comment->group_id = ($request->group) ? (bool) $request->group : $comment->group_id;
+			$comment->title = ($request->exists('title')) ? $request->title : $comment->title;
+			$comment->content = ($request->exists('content')) ? $request->content : $comment->content;
+			$comment->allow_comments = ($request->exists('comments')) ? (bool) $request->comments : $comment->allow_comments;
+			$comment->group_id = ($request->exists('group')) ? (bool) $request->group : $comment->group_id;
 
 			$comment->save();
 			if($comment->save())

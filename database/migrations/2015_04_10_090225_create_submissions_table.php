@@ -24,6 +24,10 @@ class CreateSubmissionsTable extends Migration {
 			$table->timestamp('read_at')->nullable();
 			$table->timestamp('submitted_at')->nullable();
 			$table->timestamp('marked_at')->nullable();
+			$table->integer('user_id')->unsigned();
+			$table->foreign('user_id')->references('id')->on('users');
+			$table->timestamps();
+			$table->timestamp('published_at');
 		});
 	}
 

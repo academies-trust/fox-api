@@ -48,8 +48,11 @@ class GroupController extends ApiController {
 				'name' => 'required',
 				'open' => 'required|boolean',
 				'service_provider' => 'required|boolean',
+				'sites' => 'required'
 			]
 		);
+
+		$sites = explode(',', $request->sites);
 
 		$group = new Group();
 		$group->name = $request->name;
@@ -57,6 +60,7 @@ class GroupController extends ApiController {
 		$group->service_provider = (bool) $request->service_provider;
 
 		if($group->save()) {
+			$group->sites()->sync($sites);
 			$group->users()->attach(Auth::user()->id, ['permission_id' => 1]);
 			return $this->respondWithItem($group, new GroupTransformer);
 		}

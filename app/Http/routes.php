@@ -14,12 +14,29 @@
 
 ## Authentication
 
-Route::post('/signin', 'UserController@signin');
+Route::post('/token', 'UserController@signin');
 //Route::post('/signup', 'UserController@signup');
 Route::get('/sync', 'UserController@sync');
 
 Route::group(['middleware' => ['checkToken' /*'jwt.refresh'*/]], function() {
 	## Organisational Routes
+
+	Route::get('trusts', 'TrustController@index');
+	Route::post('trusts', 'TrustController@store');
+	Route::get('trusts/{trusts}', 'TrustController@show');
+	Route::patch('trusts/{trusts}', 'TrustController@update');
+	Route::delete('trusts/{trusts}', 'TrustController@destroy');
+
+	Route::post('trusts/{trusts}/sites', 'SiteController@store');
+	Route::get('sites', 'SiteController@index');
+	Route::get('sites/{sites}', 'SiteController@show');
+	Route::patch('sites/{sites}', 'SiteController@update');
+	Route::delete('sites/{sites}', 'SiteController@destroy');
+
+	Route::get('users', 'UserController@index');
+	Route::patch('users/{users}', 'UserController@update');
+	Route::get('users/{users}', 'UserController@show');
+	Route::delete('users/{users}', 'UserController@destroy');
 
 	Route::get('classes', 'ClassController@index');
 	Route::post('classes', 'ClassController@store');
@@ -33,12 +50,6 @@ Route::group(['middleware' => ['checkToken' /*'jwt.refresh'*/]], function() {
 	Route::patch('groups/{groups}', 'GroupController@update');
 	Route::delete('groups/{groups}', 'GroupController@destroy');
 
-	Route::get('trusts', 'TrustController@index');
-	Route::post('trusts', 'TrustController@store');
-	Route::get('trusts/{trusts}', 'TrustController@show');
-	Route::patch('trusts/{trusts}', 'TrustController@update');
-	Route::delete('trusts/{trusts}', 'TrustController@destroy');
-
 	Route::get('permissions', 'PermissionController@index');
 	Route::post('permissions', 'PermissionController@store');
 	Route::get('permissions/{permissions}', 'PermissionController@show');
@@ -51,34 +62,24 @@ Route::group(['middleware' => ['checkToken' /*'jwt.refresh'*/]], function() {
 	Route::patch('roles/{roles}', 'RoleController@update');
 	Route::delete('roles/{roles}', 'RoleController@destroy');
 
-	Route::get('sites', 'SiteController@index');
-	Route::post('sites', 'SiteController@store');
-	Route::get('sites/{sites}', 'SiteController@show');
-	Route::patch('sites/{sites}', 'SiteController@update');
-	Route::delete('sites/{sites}', 'SiteController@destroy');
-
+	Route::post('sites/{sites}/subjects', 'SubjectController@store');
 	Route::get('subjects', 'SubjectController@index');
-	Route::post('subjects', 'SubjectController@store');
 	Route::get('subjects/{subjects}', 'SubjectController@show');
 	Route::patch('subjects/{subjects}', 'SubjectController@update');
 	Route::delete('subjects/{subjects}', 'SubjectController@destroy');
-
-	Route::post('users', 'UserController@update');
-	Route::get('users', 'UserController@show');
-	Route::delete('users', 'UserController@destroy');
 
 
 
 	## Modules
 
+	Route::post('groups/{groups}/articles', 'ArticleController@store');
 	Route::get('articles', 'ArticleController@index');
-	Route::post('articles', 'ArticleController@store');
 	Route::get('articles/{articles}', 'ArticleController@show');
 	Route::patch('articles/{articles}', 'ArticleController@update');
 	Route::delete('articles/{articles}', 'ArticleController@destroy');
 
+	Route::post('users/{users}/behaviour', 'BehaviourController@store');
 	Route::get('behaviour', 'BehaviourController@index');
-	Route::post('behaviour', 'BehaviourController@store');
 	Route::get('behaviour/{behaviour}', 'BehaviourController@show');
 	Route::patch('behaviour/{behaviour}', 'BehaviourController@update');
 	Route::delete('behaviour/{behaviour}', 'BehaviourController@destroy');
@@ -89,62 +90,57 @@ Route::group(['middleware' => ['checkToken' /*'jwt.refresh'*/]], function() {
 	Route::patch('behaviourmodels/{behaviourmodels}', 'BehaviourModelController@update');
 	Route::delete('behaviourmodels/{behaviourmodels}', 'BehaviourModelController@destroy');
 
-	Route::get('claims', 'ClaimController@index');
-	Route::post('claims', 'ClaimController@store');
-	Route::get('claims/{claims}', 'ClaimController@show');
-	Route::patch('claims/{claims}', 'ClaimController@update');
-	Route::delete('claims/{claims}', 'ClaimController@destroy');
-
-	Route::post('claimupdates', 'ClaimUpdatesController@store');
-	Route::get('claimupdates/{claimupdates}', 'ClaimUpdatesController@show');
-	Route::patch('claimupdates/{claimupdates}', 'ClaimUpdatesController@update');
-	Route::delete('claimupdates/{claimupdates}', 'ClaimUpdatesController@destroy');
-
-	Route::post('comments', 'CommentController@store');
-	Route::get('comments/{comments}', 'CommentController@show');
-	Route::patch('comments/{comments}', 'CommentController@update');
-	Route::delete('comments/{comments}', 'CommentController@destroy');
-
-	Route::get('devices', 'DeviceController@index');
-	Route::post('devices', 'DeviceController@store');
-	Route::get('devices/{devices}', 'DeviceController@show');
-	Route::patch('devices/{devices}', 'DeviceController@update');
-	Route::delete('devices/{devices}', 'DeviceController@destroy');
-
-	Route::get('deviceschemes', 'DeviceSchemeController@index');
+	Route::get('sites/{sites}/deviceschemes', 'DeviceSchemeController@index');
 	Route::post('deviceschemes', 'DeviceSchemeController@store');
 	Route::get('deviceschemes/{deviceschemes}', 'DeviceSchemeController@show');
 	Route::patch('deviceschemes/{deviceschemes}', 'DeviceSchemeController@update');
 	Route::delete('deviceschemes/{deviceschemes}', 'DeviceSchemeController@destroy');
 
+	Route::get('deviceschemes/{deviceschemes}/devices', 'DeviceController@index');
+	Route::post('devices', 'DeviceController@store');
+	Route::get('devices/{devices}', 'DeviceController@show');
+	Route::patch('devices/{devices}', 'DeviceController@update');
+	Route::delete('devices/{devices}', 'DeviceController@destroy');
+
+	Route::post('devices/{devices}/claims', 'ClaimController@store');
+	Route::get('claims', 'ClaimController@index');
+	Route::get('claims/{claims}', 'ClaimController@show');
+	Route::patch('claims/{claims}', 'ClaimController@update');
+	Route::delete('claims/{claims}', 'ClaimController@destroy');
+
+	Route::post('claims/{claims}/claimupdates', 'ClaimUpdatesController@store');
+	Route::get('claimupdates/{claimupdates}', 'ClaimUpdatesController@show');
+	Route::patch('claimupdates/{claimupdates}', 'ClaimUpdatesController@update');
+	Route::delete('claimupdates/{claimupdates}', 'ClaimUpdatesController@destroy');
+
+	Route::post('posts/{posts}/comments', 'CommentController@store');
+	Route::get('comments/{comments}', 'CommentController@show');
+	Route::patch('comments/{comments}', 'CommentController@update');
+	Route::delete('comments/{comments}', 'CommentController@destroy');
+
+	Route::post('groups/{groups}/events', 'EventController@store');
 	Route::get('events', 'EventController@index');
-	Route::post('events', 'EventController@store');
 	Route::get('events/{events}', 'EventController@show');
 	Route::patch('events/{events}', 'EventController@update');
 	Route::delete('events/{events}', 'EventController@destroy');
 
+	Route::post('users/{users}/feedbacks', 'FeedbackController@store');
 	Route::get('feedbacks', 'FeedbackController@index');
-	Route::post('feedbacks', 'FeedbackController@store');
 	Route::get('feedbacks/{feedbacks}', 'FeedbackController@show');
 	Route::patch('feedbacks/{feedbacks}', 'FeedbackController@update');
 	Route::delete('feedbacks/{feedbacks}', 'FeedbackController@destroy');
 
+	Route::post('users/{users}/markingschemes', 'MarkingSchemeController@store');
+	Route::get('markingschemes', 'MarkingSchemeController@index');
+	Route::get('markingschemes/{markingschemes}', 'MarkingSchemeController@show');
+	Route::patch('markingschemes/{markingschemes}', 'MarkingSchemeController@update');
+	Route::delete('markingschemes/{markingschemes}', 'MarkingSchemeController@destroy');
+
+	Route::post('markingschemes/{markingschemes}/gradings', 'GradingController@store');
 	Route::get('gradings', 'GradingController@index');
-	Route::post('gradings', 'GradingController@store');
 	Route::get('gradings/{gradings}', 'GradingController@show');
 	Route::patch('gradings/{gradings}', 'GradingController@update');
 	Route::delete('gradings/{gradings}', 'GradingController@destroy');
-
-	Route::get('help', 'HelpController@index');
-	Route::post('help', 'HelpController@store');
-	Route::get('help/{help}', 'HelpController@show');
-	Route::patch('help/{help}', 'HelpController@update');
-	Route::delete('help/{help}', 'HelpController@destroy');
-
-	Route::post('helpcontents', 'HelpContentController@store');
-	Route::get('helpcontents/{helpcontents}', 'HelpContentController@show');
-	Route::patch('helpcontents/{helpcontents}', 'HelpContentController@update');
-	Route::delete('helpcontents/{helpcontents}', 'HelpContentController@destroy');
 
 	Route::get('insurances', 'InsuranceController@index');
 	Route::post('insurances', 'InsuranceController@store');
@@ -158,11 +154,7 @@ Route::group(['middleware' => ['checkToken' /*'jwt.refresh'*/]], function() {
 	Route::patch('lessons/{lessons}', 'LessonController@update');
 	Route::delete('lessons/{lessons}', 'LessonController@destroy');
 
-	Route::get('markingschemes', 'MarkingSchemeController@index');
-	Route::post('markingschemes', 'MarkingSchemeController@store');
-	Route::get('markingschemes/{markingschemes}', 'MarkingSchemeController@show');
-	Route::patch('markingschemes/{markingschemes}', 'MarkingSchemeController@update');
-	Route::delete('markingschemes/{markingschemes}', 'MarkingSchemeController@destroy');
+	
 
 	Route::get('modules', 'ModuleController@index');
 	Route::post('modules', 'ModuleController@store');
@@ -170,8 +162,8 @@ Route::group(['middleware' => ['checkToken' /*'jwt.refresh'*/]], function() {
 	Route::patch('modules/{modules}', 'ModuleController@update');
 	Route::delete('modules/{modules}', 'ModuleController@destroy');
 
+	Route::post('groups/{groups}/notices', 'NoticeController@store');
 	Route::get('notices', 'NoticeController@index');
-	Route::post('notices', 'NoticeController@store');
 	Route::get('notices/{notices}', 'NoticeController@show');
 	Route::patch('notices/{notices}', 'NoticeController@update');
 	Route::delete('notices/{notices}', 'NoticeController@destroy');
@@ -188,20 +180,20 @@ Route::group(['middleware' => ['checkToken' /*'jwt.refresh'*/]], function() {
 	Route::patch('posts/{posts}', 'PostController@update');
 	Route::delete('posts/{posts}', 'PostController@destroy');
 
+	Route::post('groups/{groups}/resources', 'ResourceController@store');
 	Route::get('resources', 'ResourceController@index');
-	Route::post('resources', 'ResourceController@store');
 	Route::get('resources/{resources}', 'ResourceController@show');
 	Route::patch('resources/{resources}', 'ResourceController@update');
 	Route::delete('resources/{resources}', 'ResourceController@destroy');
 
+	Route::post('groups/{groups}/servicealerts', 'ServiceAlertController@store');
 	Route::get('servicealerts', 'ServiceAlertController@index');
-	Route::post('servicealerts', 'ServiceAlertController@store');
 	Route::get('servicealerts/{servicealerts}', 'ServiceAlertController@show');
 	Route::patch('servicealerts/{servicealerts}', 'ServiceAlertController@update');
 	Route::delete('servicealerts/{servicealerts}', 'ServiceAlertController@destroy');
 
+	Route::post('tasks/{tasks}/submissions', 'SubmissionController@store');
 	Route::get('submissions', 'SubmissionController@index');
-	Route::post('submissions', 'SubmissionController@store');
 	Route::get('submissions/{submissions}', 'SubmissionController@show');
 	Route::patch('submissions/{submissions}', 'SubmissionController@update');
 	Route::delete('submissions/{submissions}', 'SubmissionController@destroy');

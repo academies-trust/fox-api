@@ -6,9 +6,14 @@ class ServiceAlert extends Model {
 
 	protected $dates = ['expires_at'];
 
-	public function posts()
+	public function resources()
 	{
-		return $this->morphMany('App\Post', 'postable');
+		return $this->morphToMany('App\Resource', 'resourceable');
+	}
+
+	public function user()
+	{
+		return $this->belongsTo('App\User');
 	}
 
 }

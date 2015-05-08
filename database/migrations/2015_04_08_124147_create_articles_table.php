@@ -20,6 +20,10 @@ class CreateArticlesTable extends Migration {
 			$table->integer('content_id')->unsigned()->nullable();
 			$table->boolean('allow_comments');
 			$table->boolean('help')->default(0);
+			$table->integer('user_id')->unsigned();
+			$table->foreign('user_id')->references('id')->on('users');
+			$table->timestamps();
+			$table->timestamp('published_at');
 		});
 	}
 

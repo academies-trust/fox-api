@@ -20,7 +20,7 @@ class CreateArticleContentTable extends Migration {
 			$table->string('title');
 			$table->text('content');
 			$table->timestamp('approved_at');
-			$table->integer('approved_by')->unsigned();
+			$table->integer('approved_by')->unsigned()->nullable();
 			$table->foreign('approved_by')->references('id')->on('users');
 			$table->integer('user_id')->unsigned();
 			$table->foreign('user_id')->references('id')->on('users');

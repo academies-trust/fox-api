@@ -18,4 +18,13 @@ class Behaviour extends Model {
 		return $this->belongsTo('App\BehaviourModel');
 	}
 
+	public function resources()
+	{
+		return $this->morphToMany('App\Resource', 'resourceable');
+	}
+
+	public function comments() {
+		return $this->morphMany('App\Comment', 'commentable');
+	}
+
 }

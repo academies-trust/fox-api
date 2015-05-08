@@ -8,12 +8,13 @@ class ArticleTransformer extends TransformerAbstract {
 
 	protected $defaultIncludes = [
 		'post',
-		'content'
+		'activeContent'
 	];
 
 	protected $availableIncludes = [
 		'group',
-		'comments'
+		'comments',
+		'content',
 	];
 
 	public function transform(Article $article)
@@ -35,6 +36,11 @@ class ArticleTransformer extends TransformerAbstract {
 	{
 		$group = $article->group;
 		return $this->item($group, new GroupTransformer);
+	}
+	public function includeActiveContent(Article $article)
+	{
+		$content = $article->activeContent;
+		return $this->item($content, new ArticleContentTransformer);
 	}
 	public function includeContent(Article $article)
 	{

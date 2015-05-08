@@ -62,13 +62,12 @@ class AddLinkTables extends Migration {
 			$table->unique(['group_id', 'resource_id']);
 		});
 
-		Schema::create('post_resource', function(Blueprint $table)
+		Schema::create('resourceables', function(Blueprint $table)
 		{
-			$table->integer('post_id')->unsigned();
-			$table->foreign('post_id')->references('id')->on('posts');
 			$table->integer('resource_id')->unsigned();
 			$table->foreign('resource_id')->references('id')->on('resources');
-			$table->unique(['post_id', 'resource_id']);
+			$table->integer('resourceable_id')->unsigned();
+			$table->string('resourceable_type');
 		});
 
 		Schema::create('marking_scheme_site', function(Blueprint $table)
@@ -93,7 +92,7 @@ class AddLinkTables extends Migration {
 		Schema::drop('module_site');
 		Schema::drop('module_group');
 		Schema::drop('group_resource');
-		Schema::drop('post_resource');
+		Schema::drop('resourceables');
 		Schema::drop('marking_scheme_site');
 	}
 

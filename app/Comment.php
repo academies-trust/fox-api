@@ -4,14 +4,19 @@ use Illuminate\Database\Eloquent\Model;
 
 class Comment extends Model {
 
-	public function posts()
+	public function user()
 	{
-		return $this->morphMany('App\Post', 'postable');
+		return $this->belongsTo('App\User');
 	}
 
-	public function parent()
+	public function resources()
 	{
-		return $this->belongsTo('App\Post', 'parent_id');
+		return $this->morphToMany('App\Resource', 'resourceable');
+	}
+
+	public function commentable()
+	{
+		return $this->morphTo();
 	}
 
 }

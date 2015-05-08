@@ -4,9 +4,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Resource extends Model {
 
-	public function posts()
+	public function resourceable()
 	{
-		return $this->morphMany('App\Post', 'postable');
+		return $this->morphTo();
+	}
+
+	public function user()
+	{
+		return $this->belongsTo('App\User');
 	}
 
 }

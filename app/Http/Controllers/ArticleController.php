@@ -10,9 +10,11 @@ use League\Fractal\Pagination\Cursor;
 use League\Fractal\Pagination\CursorInterface;
 use Validator;
 use App\API\transformers\PostTransformer;
+use App\API\transformers\ArticleContentTransformer;
 use Illuminate\Http\Request;
 use App\Post;
 use App\Article;
+use App\Group;
 
 class ArticleController extends ApiController {
 
@@ -41,35 +43,27 @@ class ArticleController extends ApiController {
 	 *
 	 * @return Response
 	 */
-	public function store(Request $request)
+	public function store(Request $request, Group $group)
 	{
 		$validator = Validator::make(
 			$request->all(),
 			[
 				// post
-				'published' => 'required|date|before:end',
+				'published' => 'required|date',
 				// article
 				'title' => 'required|min:3|max:255',
 				'content' => 'required',
-				'group' => 'required|integer',
 				'comments' => 'required|boolean',
 				'help' => 'boolean'
 			]
 		);
 		if($validator->passes())
 		{
-			$help = ($request->help && \App\Group::find($group_id)->service_provider === 1);
+			$help = ($request->help === 1 && \App\Group::find($group_id)->service_provider === 1);
 			// TBD check user has write access to group
-			$article = Article::create([
-				'group_id' => (int) $request->group,
+			$article = $group->articles()->create([
 				'allow_comments' => (bool) $request->comments,
 				'help'	=> (bool) $help,
-			]);
-			$content = $article->content()->create([
-				'title' => $request->title,
-				'content' => $request->content,
-				'parent_id' => $article->id,
-				'user_id' => Auth::user()->id,
 			]);
 			$post = Post::create([
 				'user_id' => Auth::user()->id,
@@ -77,9 +71,16 @@ class ArticleController extends ApiController {
 				'postable_type' => 'App\Article',
 				'postable_id' => $article->id
 			]);
+
+			if($this->createArticleContent($article, $request))
+			{
+				return $this->respondWithItem($article->post, new PostTransformer);
+			} else {
+				return $this->errorInternalError('Could not create article');
+			}
 			
 		} else {
-			return $this->errorValidation($validator->messages);
+			return $this->errorValidation($validator->messages());
 		}
 	}
 
@@ -91,7 +92,7 @@ class ArticleController extends ApiController {
 	 */
 	public function show(Post $post)
 	{
-		Auth::user()->load(['groups.posts.article.post' => function ($q) use ( &$articles ) {
+		Auth::user()->load(['groups.articles.post' => function ($q) use ( &$articles ) {
 		    $articles = $q->get()->unique();
 		}]);
 		if($articles->contains($post->article)) {
@@ -113,12 +114,13 @@ class ArticleController extends ApiController {
 			$request->all(),
 			[
 				// post
-				'published' => 'sometimes|date',
+				'published' => 'sometimes|date|before:end',
 				// article
-				'title' => 'sometimes|max:255|min:3',
-				'content' => 'sometimes',
+				'title' => 'sometimes|min:3|max:255',
 				'group' => 'sometimes|integer',
-				'comments' => 'sometimes',
+				'comments' => 'sometimes|boolean',
+				'help' => 'sometimes|boolean',
+				'approve' => 'sometimes|boolean|required_with:content',
 			]
 		);
 		if($validator->passes())
@@ -126,17 +128,34 @@ class ArticleController extends ApiController {
 			// TBD check user has write access to group
 			$article = $post->article;
 
-			$article->title = ($request->title) ? $request->title : $article->title;
-			$article->content = ($request->content) ? $request->content : $article->content;
-			$article->allow_comments = ($request->comments) ? (bool) $request->comments : $article->allow_comments;
-			$article->group_id = ($request->group) ? (bool) $request->group : $article->group_id;
-
-			$article->save();
-			if($article->save())
+			if($request->title && $request->content && !is_int($request->content))
 			{
-				return $this->respondWithItem($article->post, new PostTransformer);
-			} else {
-				return $this->errorInternal('Unable to update article');
+				$content = $this->createArticleContent($article, $request);
+				if($content)
+				{
+					return $this->respondWithItem($content, new ArticleContentTransformer);
+				}
+			} else if($request->content && is_int($request->content))
+			{
+				// check is admin
+				$article->content_id = ($request->exists('content_id')) ? $request->content_id : $article->content_id;
+				$article->allow_comments = ($request->exists('comments')) ? (bool) $request->comments : $article->allow_comments;
+				$article->group_id = ($request->exists('group')) ? (bool) $request->group : $article->group_id;
+				if($request->exists('approve'))
+				{
+					if($request->approve)
+					{
+						$this->approveContent($article, $request->content);
+					} else {
+						$this->rejectContent($article, $request->content);
+					}
+				}
+				if($article->save())
+				{
+					return $this->respondWithItem($article->post, new PostTransformer);
+				} else {
+					return $this->errorInternal('Unable to update article');
+				}
 			}
 			
 		} else {
@@ -157,4 +176,40 @@ class ArticleController extends ApiController {
 		}
 	}
 
+	protected function createArticleContent(Article $article, $request)
+	{
+		$content = $article->content()->create([
+			'title' => $request->title,
+			'content' => $request->content,
+			'parent_id' => $article->id,
+			'user_id' => Auth::user()->id,
+		]);
+		// TBD check if user is Admin, and make approved if so
+		// else run event for moderation required
+		return $content;
+	}
+
+	protected function approveContent(Article $article, $content_id)
+	{
+		$content = $article->content()->find($content_id);
+		if($content->count())
+		{
+			$content->approved_by = Auth::user();
+			$content->approved_at = Carbon::now();
+			$content->save();
+		}
+		return $this->makeContent($article, $content_id);
+	}
+
+	protected function makeContent(Article $article, $content_id)
+	{
+		$poss_articles = $article->content()->lists('id');
+		if(in_array($content_id, $poss_articles))
+		{
+			$article->content_id = $content_id;
+			$article->save();
+			return $this->respondWithItem($article, new ArticleTransformer);
+		}
+		return $this->errorInternalError('The content specified to make active doesn\'t appear to be related to the article.');
+	}
 }

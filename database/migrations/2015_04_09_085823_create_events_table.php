@@ -20,6 +20,10 @@ class CreateEventsTable extends Migration {
 			$table->integer('group_id')->unsigned();
 			$table->foreign('group_id')->references('id')->on('groups');
 			$table->boolean('allow_comments');
+			$table->integer('user_id')->unsigned();
+			$table->foreign('user_id')->references('id')->on('users');
+			$table->timestamps();
+			$table->timestamp('published_at');
 		});
 	}
 

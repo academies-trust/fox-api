@@ -6,20 +6,24 @@ class Event extends Model {
 
 	protected 	$dates = ['starts_at', 'ends_at'],
 				$fillable = ['starts_at', 'ends_at', 'group_id', 'allow_comments'];
-	public 		$timestamps = false;
 
-	public function post()
+	public function resources()
 	{
-		return $this->morphOne('App\Post', 'postable');
+		return $this->morphToMany('App\Resource', 'resourceable');
 	}
 
-	public function eventable()
+	public function lessons()
 	{
-		return $this->morphTo();
+		return $this->hasOne('App\Lesson');
 	}
 
 	public function comments() {
 		return $this->hasMany('App\Comment');
+	}
+
+	public function user()
+	{
+		return $this->belongsTo('App\User');
 	}
 
 }

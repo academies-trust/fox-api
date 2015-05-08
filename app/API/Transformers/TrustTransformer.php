@@ -10,7 +10,7 @@ class TrustTransformer extends TransformerAbstract {
 		'sites',
 	];
 
-	public function transform(Trust $Trust)
+	public function transform(Trust $trust)
 	{
 		$template = [
 			'id'	=> $trust['id'],

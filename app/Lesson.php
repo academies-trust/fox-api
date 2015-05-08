@@ -6,7 +6,7 @@ class Lesson extends Model {
 
 	public function events()
 	{
-		return $this->morphMany('App\Event', 'eventable');
+		return $this->belongsTo('App\Event');
 	}
 
 	public function class() {

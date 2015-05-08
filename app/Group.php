@@ -13,6 +13,10 @@ class Group extends Model {
 		return $this->belongsToMany('App\Module', 'module_group');
 	}
 
+	public function articles() {
+		return $this->hasMany('App\Article');
+	}
+
 	public function events()
 	{
 		return $this->hasMany('App\Event');
@@ -26,7 +30,7 @@ class Group extends Model {
 		return $this->belongsToMany('App\User');
 	}
 
-	public function groupUser()
+	public function groupUsers()
 	{
 		return $this->hasMany('App\GroupUser');
 	}

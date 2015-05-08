@@ -4,14 +4,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Article extends Model {
 
-	public function posts()
-	{
-		return $this->morphMany('App\Post', 'postable');
-	}
+	protected 	$fillable = ['published_at', 'group_id', 'help', 'allow_comments'];
+	protected 	$dates = ['deleted_at', 'published_at'];
 
 	public function content()
 	{
 		return $this->hasMany('App\ArticleContent');
+	}
+
+	public function activeContent()
+	{
+		return $this->belongsTo('App\ArticleContent', 'content_id');
 	}
 
 	public function group() {
@@ -20,6 +23,11 @@ class Article extends Model {
 
 	public function comments() {
 		return $this->hasMany('App\Comment', 'parent_id');
+	}
+
+	public function resources()
+	{
+		return $this->morphToMany('App\Resource', 'resourceable');
 	}
 
 }
