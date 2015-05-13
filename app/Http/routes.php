@@ -21,6 +21,8 @@ Route::get('/sync', 'UserController@sync');
 Route::group(['middleware' => ['checkToken' /*'jwt.refresh'*/]], function() {
 	## Organisational Routes
 
+	Route::get('/token', 'UserController@getAuthenticated');
+
 	Route::get('trusts', 'TrustController@index');
 	Route::post('trusts', 'TrustController@store');
 	Route::get('trusts/{trusts}', 'TrustController@show');

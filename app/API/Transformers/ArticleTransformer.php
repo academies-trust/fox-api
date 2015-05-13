@@ -7,8 +7,7 @@ use League\Fractal\TransformerAbstract;
 class ArticleTransformer extends TransformerAbstract {
 
 	protected $defaultIncludes = [
-		'post',
-		'activeContent'
+		'activeContent',
 	];
 
 	protected $availableIncludes = [
@@ -23,7 +22,7 @@ class ArticleTransformer extends TransformerAbstract {
 			'id'	=> (int) $article['id'],
 			'content' => (int) $article['content_id'],
 			'comments_enabled' => (bool) $article['allow_comments'],
-			'help'	=> (bool) $article['help'];
+			'help'	=> (bool) $article['help'],
 			'links' => [
 				'rel' => 'self',
 				'uri' => '/articles/'.$article['id']
@@ -51,10 +50,5 @@ class ArticleTransformer extends TransformerAbstract {
 	{
 		$comments = $article->comments;
 		return $this->collection($comments, new CommentTransformer);
-	}
-	public function includePost(Article $article)
-	{
-		$post = $article->post;
-		return $this->item($post, new PostTransformer);
 	}
 }

@@ -26,18 +26,11 @@ return array(
     ),
 
     'paths' => array(
-        'api/*' => array(
+        '*' => array(
             'allowedOrigins' => array('*'),
             'allowedHeaders' => array('*'),
             'allowedMethods' => array('*'),
             'maxAge' => 3600,
-        ),
-        '*' => array(
-            'allowedOrigins' => array('*'),
-            'allowedHeaders' => array('Content-Type'),
-            'allowedMethods' => array('POST', 'PUT', 'GET', 'DELETE'),
-            'maxAge' => 3600,
-            'hosts' => array('api.*'),
         ),
     ),
 

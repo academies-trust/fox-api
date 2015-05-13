@@ -17,7 +17,7 @@ class ArticleContentTransformer extends TransformerAbstract {
 		$template = [
 			'id'	=> (int) $articleContent['id'],
 			'title'	=> $articleContent['title'],
-			'content'=> (int) $articleContent['content'],
+			'content'=> $articleContent['content'],
 			'approved'	=> $articleContent['approved_at'],
 			'created'	=> $articleContent['created_at'],
 			'updated'	=> $articleContent['updated_at'],

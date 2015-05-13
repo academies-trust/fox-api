@@ -4,7 +4,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Article extends Model {
 
-	protected 	$fillable = ['published_at', 'group_id', 'help', 'allow_comments'];
+	protected 	$fillable = ['published_at', 'group_id', 'help', 'allow_comments', 'user_id'];
 	protected 	$dates = ['deleted_at', 'published_at'];
 
 	public function content()
@@ -22,7 +22,7 @@ class Article extends Model {
 	}
 
 	public function comments() {
-		return $this->hasMany('App\Comment', 'parent_id');
+		return $this->morphMany('App\Comment', 'commentable');
 	}
 
 	public function resources()

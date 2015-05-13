@@ -11,6 +11,7 @@ use League\Fractal\Resource\Item;
 use League\Fractal\Manager;
 use League\Fractal\Pagination\Cursor;
 use League\Fractal\Pagination\CursorInterface;
+use App\API\Transformers\UserTransformer;
 use Validator;
 use Crypt;
 
@@ -222,6 +223,10 @@ class UserController extends ApiController {
 			$this->removeSiteUser($user->id, $site->id);
 		}
 		$user->delete();
+	}
+
+	public function getAuthenticated() {
+		return $this->respondWithItem($this->getAuthenticatedUser(), new UserTransformer);
 	}
 
 	public function signin(Request $request)

@@ -9,10 +9,9 @@ use League\Fractal\Manager;
 use League\Fractal\Pagination\Cursor;
 use League\Fractal\Pagination\CursorInterface;
 use Validator;
-use App\API\transformers\PostTransformer;
+use App\API\transformers\ArticleTransformer;
 use App\API\transformers\ArticleContentTransformer;
 use Illuminate\Http\Request;
-use App\Post;
 use App\Article;
 use App\Group;
 
@@ -25,15 +24,17 @@ class ArticleController extends ApiController {
 	 */
 	public function index(Request $request)
 	{
-		Auth::user()->load(['groups.posts.article.post' => function ($q) use ( &$posts) {
-		       $posts = $q->limit($this->per_page)
+		Auth::user()->load(['groups.articles' => function ($q) use ( &$articles) {
+		       $articles = $q->orderBy('published_at', 'desc')
+		       			->where('published_at', '<=', \Carbon\Carbon::now())
+		       			->limit($this->per_page)
 		       			->skip($this->current)
 		       			->get()
 		       			->unique();
 		}]);
-		if($posts) {
-			$cursor = new Cursor($this->current, $this->prev, $this->next, $posts->count());
-			return $this->respondWithCursor($posts, new PostTransformer, $cursor);
+		if($articles) {
+			$cursor = new Cursor($this->current, $this->prev, $this->next, $articles->count());
+			return $this->respondWithCursor($articles, new ArticleTransformer, $cursor);
 		}
 		return $this->errorNotFound('No articles found');
 	}
@@ -64,17 +65,15 @@ class ArticleController extends ApiController {
 			$article = $group->articles()->create([
 				'allow_comments' => (bool) $request->comments,
 				'help'	=> (bool) $help,
-			]);
-			$post = Post::create([
 				'user_id' => Auth::user()->id,
 				'published_at' => $request->published,
-				'postable_type' => 'App\Article',
-				'postable_id' => $article->id
 			]);
-
-			if($this->createArticleContent($article, $request))
+			$content = $this->createArticleContent($article, $request);
+			if($content)
 			{
-				return $this->respondWithItem($article->post, new PostTransformer);
+				$article->content_id = $content->id;
+				$article->save();
+				return $this->respondWithItem($article, new ArticleTransformer);
 			} else {
 				return $this->errorInternalError('Could not create article');
 			}
@@ -90,13 +89,13 @@ class ArticleController extends ApiController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function show(Post $post)
+	public function show(Article $article)
 	{
-		Auth::user()->load(['groups.articles.post' => function ($q) use ( &$articles ) {
+		Auth::user()->load(['groups.articles' => function ($q) use ( &$articles ) {
 		    $articles = $q->get()->unique();
 		}]);
-		if($articles->contains($post->article)) {
-			return $this->respondWithItem($post, new PostTransformer);	
+		if($articles->contains($article)) {
+			return $this->respondWithItem($article, new ArticleTransformer);	
 		} else {
 			return $this->errorNotFound('Article not found');	
 		}

@@ -4,6 +4,7 @@ use Closure;
 use JWTAuth;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+use Response;
 
 class checkToken extends BaseMiddleware {
 
@@ -18,6 +19,7 @@ class checkToken extends BaseMiddleware {
 	{
 
 		if (! $token = $this->auth->setRequest($request)->getToken()) {
+            return Response::json(['Blah'], 401);
             throw new UnauthorizedHttpException('Bearer', 'Missing or Incomplete Token');
         }
         try {
