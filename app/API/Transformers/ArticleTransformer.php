@@ -23,6 +23,7 @@ class ArticleTransformer extends TransformerAbstract {
 			'content' => (int) $article['content_id'],
 			'comments_enabled' => (bool) $article['allow_comments'],
 			'help'	=> (bool) $article['help'],
+			'published' => $article['published_at'],
 			'links' => [
 				'rel' => 'self',
 				'uri' => '/articles/'.$article['id']

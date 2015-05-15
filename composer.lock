@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "2e014d405ea800b960fbbf53fc82cdde",
+    "hash": "206ba1af973aed8bac6d27d59e53ff5d",
     "packages": [
         {
             "name": "adldap/adldap",
@@ -95,27 +95,27 @@
         },
         {
             "name": "barryvdh/laravel-cors",
-            "version": "v0.4.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/barryvdh/laravel-cors.git",
-                "reference": "fc49af3afafc181fec478e4dd8f02220518f2a14"
+                "reference": "7de71aa777f38393365f98eccb44d8ae6c85a95a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/barryvdh/laravel-cors/zipball/fc49af3afafc181fec478e4dd8f02220518f2a14",
-                "reference": "fc49af3afafc181fec478e4dd8f02220518f2a14",
+                "url": "https://api.github.com/repos/barryvdh/laravel-cors/zipball/7de71aa777f38393365f98eccb44d8ae6c85a95a",
+                "reference": "7de71aa777f38393365f98eccb44d8ae6c85a95a",
                 "shasum": ""
             },
             "require": {
                 "asm89/stack-cors": "0.2.x",
-                "illuminate/support": "5.0.x",
+                "illuminate/support": "~5.0.17",
                 "php": ">=5.4.0"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.4-dev"
+                    "dev-master": "0.5-dev"
                 }
             },
             "autoload": {
@@ -140,7 +140,7 @@
                 "crossdomain",
                 "laravel"
             ],
-            "time": "2015-02-05 08:37:08"
+            "time": "2015-04-03 18:27:34"
         },
         {
             "name": "classpreloader/classpreloader",
@@ -3684,7 +3684,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "barryvdh/laravel-cors": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

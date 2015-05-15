@@ -8,7 +8,7 @@
 		"laravel/framework": "5.0.*",
 		"tymon/jwt-auth": "0.5.*",
 		"doctrine/dbal": "~2.5",
-		"barryvdh/laravel-cors": "0.4.*",
+		"barryvdh/laravel-cors": "0.5.*@dev",
 		"league/fractal": "0.12.*",
 		"fzaninotto/faker": "~1.4",
 		"adldap/adldap": "~4.0"

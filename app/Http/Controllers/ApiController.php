@@ -140,7 +140,7 @@ class ApiController extends Controller {
 	*/
 	public function errorUnauthorised($message = '')
 	{
-		throw new UnauthorizedHttpException($message);
+		throw new UnauthorizedHttpException('Bearer', $message);
 	}
 	/**
 	* @param string $message

@@ -12,6 +12,11 @@ class Article extends Model {
 		return $this->hasMany('App\ArticleContent');
 	}
 
+	public function scopeActive($query)
+	{
+		return $query->where('published_at', '<=', \Carbon\Carbon::now())->orderBy('published_at', 'desc')->orderBy('updated_at', 'desc');
+	}
+
 	public function activeContent()
 	{
 		return $this->belongsTo('App\ArticleContent', 'content_id');

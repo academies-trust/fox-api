@@ -25,8 +25,7 @@ class ArticleController extends ApiController {
 	public function index(Request $request)
 	{
 		Auth::user()->load(['groups.articles' => function ($q) use ( &$articles) {
-		       $articles = $q->orderBy('published_at', 'desc')
-		       			->where('published_at', '<=', \Carbon\Carbon::now())
+		       $articles = $q->active()
 		       			->limit($this->per_page)
 		       			->skip($this->current)
 		       			->get()

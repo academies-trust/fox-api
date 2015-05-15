@@ -19,7 +19,7 @@ class checkToken extends BaseMiddleware {
 	{
 
 		if (! $token = $this->auth->setRequest($request)->getToken()) {
-            return Response::json(['Blah'], 401);
+            return Response::json(['Misisng or Incomplete Token'], 401);
             throw new UnauthorizedHttpException('Bearer', 'Missing or Incomplete Token');
         }
         try {
