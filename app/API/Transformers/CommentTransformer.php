@@ -6,12 +6,9 @@ use League\Fractal\TransformerAbstract;
 
 class CommentTransformer extends TransformerAbstract {
 
-	protected $defaultIncludes = [
-		'post'
-	];
-
 	protected $availableIncludes = [
 		'parent',
+		'user',
 	];
 
 	public function transform(Comment $comment)
@@ -19,6 +16,9 @@ class CommentTransformer extends TransformerAbstract {
 		$template = [
 			'id'	=> (int) $comment['id'],
 			'content' => $comment['content'],
+			'created' => $comment['created_at'],
+			'updated' => $comment['updated_at'],
+			'published' => $comment['published_at'],
 			'links' => [
 				'rel' => 'self',
 				'uri' => '/comments/'.$comment['id']
@@ -32,9 +32,9 @@ class CommentTransformer extends TransformerAbstract {
 		$parent = $comment->parent;
 		return $this->item($parent, new PostTransformer);
 	}
-	public function includePost(Comment $comment)
+	public function includeUser(Comment $comment)
 	{
-		$post = $comment->post;
-		return $this->item($post, new PostTransformer);
+		$user = $comment->user;
+		return $this->item($user, new UserTransformer);
 	}
 }

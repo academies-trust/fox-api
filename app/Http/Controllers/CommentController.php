@@ -9,9 +9,7 @@ use League\Fractal\Manager;
 use League\Fractal\Pagination\Cursor;
 use League\Fractal\Pagination\CursorInterface;
 use Validator;
-use App\API\transformers\PostTransformer;
 use Illuminate\Http\Request;
-use App\Post;
 use App\Comment;
 
 class CommentController extends ApiController {
@@ -26,13 +24,8 @@ class CommentController extends ApiController {
 		$validator = Validator::make(
 			$request->all(),
 			[
-				// post
-				'published' => 'required|date|before:end',
 				// comment
-				'title' => 'required|min:3|max:255',
 				'content' => 'required',
-				'group' => 'required|integer',
-				'comments' => 'required|boolean',
 			]
 		);
 		if($validator->passes())

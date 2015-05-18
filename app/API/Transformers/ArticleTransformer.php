@@ -8,11 +8,11 @@ class ArticleTransformer extends TransformerAbstract {
 
 	protected $defaultIncludes = [
 		'activeContent',
+		'comments',
 	];
 
 	protected $availableIncludes = [
 		'group',
-		'comments',
 		'content',
 	];
 

@@ -13,6 +13,7 @@ use App\API\transformers\ArticleTransformer;
 use App\API\transformers\ArticleContentTransformer;
 use Illuminate\Http\Request;
 use App\Article;
+use App\Comment;
 use App\Group;
 
 class ArticleController extends ApiController {
@@ -106,7 +107,7 @@ class ArticleController extends ApiController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update(Post $post, Request $request)
+	public function update(Article $article, Request $request)
 	{
 		$validator = Validator::make(
 			$request->all(),
@@ -150,7 +151,7 @@ class ArticleController extends ApiController {
 				}
 				if($article->save())
 				{
-					return $this->respondWithItem($article->post, new PostTransformer);
+					return $this->respondWithItem($article, new ArticleTransformer);
 				} else {
 					return $this->errorInternal('Unable to update article');
 				}
@@ -167,9 +168,9 @@ class ArticleController extends ApiController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function destroy(Post $post)
+	public function destroy(Article $article)
 	{
-		if($post->delete()) {
+		if($article->delete()) {
 			return $this->respondSuccess('Article Deleted');
 		}
 	}
@@ -209,5 +210,31 @@ class ArticleController extends ApiController {
 			return $this->respondWithItem($article, new ArticleTransformer);
 		}
 		return $this->errorInternalError('The content specified to make active doesn\'t appear to be related to the article.');
+	}
+
+	public function addComment(Article $article, Request $request) {
+		$validator = Validator::make(
+			$request->all(),
+			[
+				// comment
+				'content' => 'required',
+			]
+		);
+		if($validator->passes())
+		{
+			// TBD check user has write access to group
+			$comment = $article->comments()->create([
+				'content' => $request->content,
+				'postable_type' => 'App\Article',
+				'postable_id' => $article->id,
+				'user_id' => Auth::user()->id
+			]);
+			if($comment) {
+				return $this->respondWithItem($article, new ArticleTransformer);
+			}
+			
+		} else {
+			return $this->errorValidation($validator->messages);
+		}
 	}
 }

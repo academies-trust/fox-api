@@ -19,7 +19,7 @@ class checkToken extends BaseMiddleware {
 	{
 
 		if (! $token = $this->auth->setRequest($request)->getToken()) {
-            return Response::json(['Misisng or Incomplete Token'], 401);
+            return Response::json(['Missing or Incomplete Token'], 401);
             throw new UnauthorizedHttpException('Bearer', 'Missing or Incomplete Token');
         }
         try {
@@ -31,7 +31,7 @@ class checkToken extends BaseMiddleware {
         }
 
         if (! $user) {
-            throw new NotFoundHttpException('User Not Found');
+            throw new UnauthorizedHttpException('Bearer', 'User Not Found');
         }
 
         $this->events->fire('tymon.jwt.valid', $user);

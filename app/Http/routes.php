@@ -115,7 +115,9 @@ Route::group(['middleware' => ['checkToken' /*'jwt.refresh'*/]], function() {
 	Route::patch('claimupdates/{claimupdates}', 'ClaimUpdatesController@update');
 	Route::delete('claimupdates/{claimupdates}', 'ClaimUpdatesController@destroy');
 
-	Route::post('posts/{posts}/comments', 'CommentController@store');
+	Route::post('articles/{articles}/comments', 'ArticleController@addComment');
+	// TBD add comment controllers for other resources
+
 	Route::get('comments/{comments}', 'CommentController@show');
 	Route::patch('comments/{comments}', 'CommentController@update');
 	Route::delete('comments/{comments}', 'CommentController@destroy');
@@ -175,12 +177,6 @@ Route::group(['middleware' => ['checkToken' /*'jwt.refresh'*/]], function() {
 	Route::get('notifications/{notifications}', 'NotificationController@show');
 	Route::patch('notifications/{notifications}', 'NotificationController@update');
 	Route::delete('notifications/{notifications}', 'NotificationController@destroy');
-
-	Route::get('posts', 'PostController@index');
-	Route::post('posts', 'PostController@store');
-	Route::get('posts/{posts}', 'PostController@show');
-	Route::patch('posts/{posts}', 'PostController@update');
-	Route::delete('posts/{posts}', 'PostController@destroy');
 
 	Route::post('groups/{groups}/resources', 'ResourceController@store');
 	Route::get('resources', 'ResourceController@index');
