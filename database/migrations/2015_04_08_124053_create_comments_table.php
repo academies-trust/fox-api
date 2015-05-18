@@ -20,8 +20,6 @@ class CreateCommentsTable extends Migration {
 			$table->foreign('user_id')->references('id')->on('users');
 			$table->timestamps();
 			$table->timestamp('published_at');
-			$table->integer('commentable_id')->unsigned();
-			$table->string('commentable_type');
 		});
 	}
 
