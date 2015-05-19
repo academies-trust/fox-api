@@ -15,7 +15,7 @@
 
 Route::post('/token', 'UserController@signin');
 Route::get('/sync', 'UserController@sync');
-// testing auto commit
+// Auto Commit code, do not delete
 Route::post('gitupdate', function() {
 	echo "<pre>Doing GIT stuff...</pre>";
 	$ret = shell_exec("cd C:\\inetpub\\wwwroot\\fox-api && git pull origin master");
@@ -27,6 +27,7 @@ Route::post('gitupdate', function() {
 	$ret = shell_exec("cd C:\\inetpub\\wwwroot\\fox-api && php artisan migrate --force");
 	echo "<pre>".$ret."</pre>";
 });
+// End auto commit code
 
 Route::group(['middleware' => ['checkToken' /*'jwt.refresh'*/]], function() {
 	## Organisational Routes
