@@ -27,7 +27,7 @@ return array(
 
     'paths' => array(
         '*' => array(
-            'allowedOrigins' => array('*'),
+            'allowedOrigins' => array('http://dev.thefoxhub.com'),
             'allowedHeaders' => array('*'),
             'allowedMethods' => array('*'),
             'maxAge' => 3600,
