@@ -12,7 +12,7 @@
 */
 
 ## Authentication
-
+header("Access-Control-Allow-Origin: *");
 
 Route::post('/token', 'UserController@signin');
 //Route::post('/signup', 'UserController@signup');

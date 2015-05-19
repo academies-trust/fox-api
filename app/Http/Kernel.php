@@ -23,5 +23,4 @@ class Kernel extends HttpKernel {
     	'jwt.refresh' => 'Tymon\JWTAuth\Middleware\RefreshToken',
     	'checkToken' => '\App\Http\Middleware\checkToken',
 	];
-
 }
