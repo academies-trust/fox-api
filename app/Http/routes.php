@@ -16,7 +16,7 @@
 Route::post('/token', 'UserController@signin');
 Route::get('/sync', 'UserController@sync');
 
-Route::get('/update', function() {
+Route::post('/update', function() {
 	print_r(exec('cd /inetpub/wwwroot/fox-api'));
 	print_r(exec('git pull origin master'));
 	print_r(exec('composer install'));
