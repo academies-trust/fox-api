@@ -12,10 +12,8 @@
 */
 
 ## Authentication
-header("Access-Control-Allow-Origin: *");
 
 Route::post('/token', 'UserController@signin');
-//Route::post('/signup', 'UserController@signup');
 Route::get('/sync', 'UserController@sync');
 
 Route::group(['middleware' => ['checkToken' /*'jwt.refresh'*/]], function() {
