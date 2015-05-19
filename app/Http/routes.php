@@ -15,6 +15,7 @@
 
 Route::post('/token', 'UserController@signin');
 Route::get('/sync', 'UserController@sync');
+// testing auto commit
 
 Route::group(['middleware' => ['checkToken' /*'jwt.refresh'*/]], function() {
 	## Organisational Routes
