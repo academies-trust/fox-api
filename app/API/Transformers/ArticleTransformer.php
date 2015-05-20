@@ -24,6 +24,7 @@ class ArticleTransformer extends TransformerAbstract {
 			'comments_enabled' => (bool) $article['allow_comments'],
 			'help'	=> (bool) $article['help'],
 			'published' => $article['published_at'],
+			'group' => $article['group_id'],
 			'links' => [
 				'rel' => 'self',
 				'uri' => '/articles/'.$article['id']
