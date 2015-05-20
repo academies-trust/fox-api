@@ -22,6 +22,7 @@ class ArticleContentTransformer extends TransformerAbstract {
 			'created'	=> $articleContent['created_at'],
 			'updated'	=> $articleContent['updated_at'],
 			'deleted'	=> $articleContent['deleted_at'],
+			'group'		=> $articleContent['group_id'],
 			'links' => [
 				'rel' => 'self',
 				'uri' => '/articleContents/'.$articleContent['id']
