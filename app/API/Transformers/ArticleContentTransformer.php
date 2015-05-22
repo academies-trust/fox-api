@@ -43,6 +43,8 @@ class ArticleContentTransformer extends TransformerAbstract {
 	public function includeApprovedBy(ArticleContent $articleContent)
 	{
 		$approvedBy = $articleContent->approvedBy;
-		return $this->item($approvedBy, new UserTransformer);
+		if($approvedBy) {
+			return $this->item($approvedBy, new UserTransformer);
+		}
 	}
 }

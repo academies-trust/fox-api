@@ -20,4 +20,8 @@ class ArticleContent extends Model {
 		return $this->belongsTo('App\User');
 	}
 
+	public function approvedBy() {
+		return $this->belongsTo('App\User', 'approved_by');
+	}
+
 }

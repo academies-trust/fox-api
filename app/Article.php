@@ -7,7 +7,7 @@ class Article extends Model {
 	protected 	$fillable = ['published_at', 'group_id', 'help', 'allow_comments', 'user_id'];
 	protected 	$dates = ['deleted_at', 'published_at'];
 
-	public function content()
+	public function contents()
 	{
 		return $this->hasMany('App\ArticleContent');
 	}

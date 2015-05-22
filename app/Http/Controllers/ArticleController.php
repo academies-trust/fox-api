@@ -68,7 +68,7 @@ class ArticleController extends ApiController {
 				'user_id' => Auth::user()->id,
 				'published_at' => $request->published,
 			]);
-			$content = $this->createArticleContent($article, $request);
+			$content = $this->createArticleContent($article, $request, 'New Article');
 			if($content)
 			{
 				$article->content_id = $content->id;
@@ -113,52 +113,43 @@ class ArticleController extends ApiController {
 			$request->all(),
 			[
 				// post
-				'published' => 'sometimes|date|before:end',
+				'published' => 'sometimes|date',
 				// article
 				'title' => 'sometimes|min:3|max:255',
 				'group' => 'sometimes|integer',
 				'comments' => 'sometimes|boolean',
 				'help' => 'sometimes|boolean',
 				'approve' => 'sometimes|boolean|required_with:content',
+				'revision' => 'sometimes|integer',
+				'reason' => 'required_with:title|max:255',
 			]
 		);
 		if($validator->passes())
 		{
 			// TBD check user has write access to group
-			$article = $post->article;
-
-			if($request->title && $request->content && !is_int($request->content))
+			$article->allow_comments = ($request->exists('comments')) ? (bool) $request->comments : $article->allow_comments;
+			$article->group_id = ($request->exists('group')) ? (bool) $request->group : $article->group_id;
+			if($request->title && $request->content)
 			{
-				$content = $this->createArticleContent($article, $request);
+				$content = $this->createArticleContent($article, $request, $request->reason);
 				if($content)
 				{
 					return $this->respondWithItem($content, new ArticleContentTransformer);
 				}
-			} else if($request->content && is_int($request->content))
+			} else if($request->has('revision'))
 			{
 				// check is admin
-				$article->content_id = ($request->exists('content_id')) ? $request->content_id : $article->content_id;
-				$article->allow_comments = ($request->exists('comments')) ? (bool) $request->comments : $article->allow_comments;
-				$article->group_id = ($request->exists('group')) ? (bool) $request->group : $article->group_id;
-				if($request->exists('approve'))
-				{
-					if($request->approve)
-					{
-						$this->approveContent($article, $request->content);
-					} else {
-						$this->rejectContent($article, $request->content);
-					}
-				}
-				if($article->save())
-				{
-					return $this->respondWithItem($article, new ArticleTransformer);
-				} else {
-					return $this->errorInternal('Unable to update article');
-				}
+				$article->content_id = ($request->exists('revision')) ? $request->revision : $article->content_id;
+				$this->approveContent($article, $request->revision);
 			}
-			
+			if($article->save())
+			{
+				return $this->respondWithItem($article, new ArticleTransformer);
+			} else {
+				return $this->errorInternal('Unable to update article');
+			}			
 		} else {
-			return $this->errorValidation($validator->messages);
+			return $this->errorValidation($validator->messages());
 		}	
 	}
 
@@ -175,13 +166,14 @@ class ArticleController extends ApiController {
 		}
 	}
 
-	protected function createArticleContent(Article $article, $request)
+	protected function createArticleContent(Article $article, $request, $reason)
 	{
-		$content = $article->content()->create([
+		$content = $article->contents()->create([
 			'title' => $request->title,
 			'content' => $request->content,
 			'parent_id' => $article->id,
 			'user_id' => Auth::user()->id,
+			'reason' => $reason,
 		]);
 		// TBD check if user is Admin, and make approved if so
 		// else run event for moderation required
@@ -190,11 +182,11 @@ class ArticleController extends ApiController {
 
 	protected function approveContent(Article $article, $content_id)
 	{
-		$content = $article->content()->find($content_id);
+		$content = $article->contents()->find($content_id);
 		if($content->count())
 		{
-			$content->approved_by = Auth::user();
-			$content->approved_at = Carbon::now();
+			$content->approved_by = Auth::user()->id;
+			$content->approved_at = \Carbon\Carbon::now();
 			$content->save();
 		}
 		return $this->makeContent($article, $content_id);
@@ -202,7 +194,7 @@ class ArticleController extends ApiController {
 
 	protected function makeContent(Article $article, $content_id)
 	{
-		$poss_articles = $article->content()->lists('id');
+		$poss_articles = $article->contents()->lists('id');
 		if(in_array($content_id, $poss_articles))
 		{
 			$article->content_id = $content_id;

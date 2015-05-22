@@ -13,7 +13,7 @@ class ArticleTransformer extends TransformerAbstract {
 
 	protected $availableIncludes = [
 		'group',
-		'content',
+		'revisions',
 	];
 
 	public function transform(Article $article)
@@ -43,10 +43,10 @@ class ArticleTransformer extends TransformerAbstract {
 		$content = $article->activeContent;
 		return $this->item($content, new ArticleContentTransformer);
 	}
-	public function includeContent(Article $article)
+	public function includeRevisions(Article $article)
 	{
-		$content = $article->content;
-		return $this->item($content, new ArticleContentTransformer);
+		$contents = $article->contents;
+		return $this->collection($contents, new ArticleContentTransformer);
 	}
 	public function includeComments(Article $article)
 	{

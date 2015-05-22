@@ -87,9 +87,9 @@ Route::group(['middleware' => ['checkToken' /*'jwt.refresh'*/]], function() {
 
 	Route::post('groups/{groups}/articles', 'ArticleController@store');
 	Route::get('articles', 'ArticleController@index');
-	Route::get('articles/{articles}', 'ArticleController@show');
-	Route::patch('articles/{articles}', 'ArticleController@update');
-	Route::delete('articles/{articles}', 'ArticleController@destroy');
+	//Route::get('articles/{articles}', 'ArticleController@show');
+	Route::any('articles/{articles}', 'ArticleController@update');
+	//Route::delete('articles/{articles}', 'ArticleController@destroy');
 
 	Route::post('users/{users}/behaviour', 'BehaviourController@store');
 	Route::get('behaviour', 'BehaviourController@index');
