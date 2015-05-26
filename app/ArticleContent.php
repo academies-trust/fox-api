@@ -9,7 +9,7 @@ class ArticleContent extends Model {
 
 	public 	$dates = ['approved_at'],
 			$table = 'article_content';
-	protected $fillable = ['title', 'content', 'approved_at', 'approved_by', 'user_id'];
+	protected $fillable = ['title', 'content', 'approved_at', 'approved_by', 'user_id', 'reason'];
 
 	public function parent() {
 		return $this->belongsTo('App\Article');

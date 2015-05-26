@@ -12,7 +12,7 @@ class AddReasonToArticleContents extends Migration {
 	 */
 	public function up()
 	{
-		Schema::table('site_user', function(Blueprint $table)
+		Schema::table('article_content', function(Blueprint $table)
 		{
 			$table->string('reason')->nullable();
 		});
@@ -25,7 +25,7 @@ class AddReasonToArticleContents extends Migration {
 	 */
 	public function down()
 	{
-		Schema::table('site_user', function(Blueprint $table)
+		Schema::table('article_content', function(Blueprint $table)
 		{
 			$table->dropColumn('reason');
 		});
