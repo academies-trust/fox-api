@@ -53,7 +53,7 @@ class ArticleController extends ApiController {
 				'published' => 'required|date',
 				// article
 				'title' => 'required|min:3|max:255',
-				'content' => 'required',
+				'content' => 'required|min:10',
 				'comments' => 'required|boolean',
 				'help' => 'boolean'
 			]
@@ -118,6 +118,7 @@ class ArticleController extends ApiController {
 				'title' => 'sometimes|min:3|max:255',
 				'group' => 'sometimes|integer',
 				'comments' => 'sometimes|boolean',
+				'content' => 'sometimes|min:10',
 				'help' => 'sometimes|boolean',
 				'approve' => 'sometimes|boolean|required_with:content',
 				'revision' => 'sometimes|integer',
