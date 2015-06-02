@@ -123,32 +123,38 @@ class ArticleController extends ApiController {
 				'approve' => 'sometimes|boolean|required_with:content',
 				'revision' => 'sometimes|integer',
 				'reason' => 'required_with:title|max:255',
+				'deleted' => 'sometimes|date',
 			]
 		);
 		if($validator->passes())
 		{
 			// TBD check user has write access to group
-			$article->allow_comments = ($request->exists('comments')) ? (bool) $request->comments : $article->allow_comments;
-			$article->group_id = ($request->exists('group')) ? (bool) $request->group : $article->group_id;
-			if($request->title && $request->content)
-			{
-				$content = $this->createArticleContent($article, $request, $request->reason);
-				if($content)
-				{
-					return $this->respondWithItem($content, new ArticleContentTransformer);
-				}
-			} else if($request->has('revision'))
-			{
-				// check is admin
-				$article->content_id = ($request->exists('revision')) ? $request->revision : $article->content_id;
-				$this->approveContent($article, $request->revision);
-			}
-			if($article->save())
-			{
+			if($article->deleted_at !== null && $request->has('deleted') && $request->deleted === null) {
+				$article->restore();
 				return $this->respondWithItem($article, new ArticleTransformer);
 			} else {
-				return $this->errorInternal('Unable to update article');
-			}			
+				$article->allow_comments = ($request->exists('comments')) ? (bool) $request->comments : $article->allow_comments;
+				$article->group_id = ($request->exists('group')) ? (bool) $request->group : $article->group_id;
+				if($request->title && $request->content)
+				{
+					$content = $this->createArticleContent($article, $request, $request->reason);
+					if($content)
+					{
+						return $this->respondWithItem($content, new ArticleContentTransformer);
+					}
+				} else if($request->has('revision'))
+				{
+					// check is admin
+					$article->content_id = ($request->exists('revision')) ? $request->revision : $article->content_id;
+					$this->approveContent($article, $request->revision);
+				}
+				if($article->save())
+				{
+					return $this->respondWithItem($article, new ArticleTransformer);
+				} else {
+					return $this->errorInternal('Unable to update article');
+				}
+			}
 		} else {
 			return $this->errorValidation($validator->messages());
 		}	

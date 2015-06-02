@@ -5,10 +5,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Article extends Model {
 
+	use SoftDeletes;
+
 	protected 	$fillable = ['published_at', 'group_id', 'help', 'allow_comments', 'user_id'];
 	protected 	$dates = ['deleted_at', 'published_at'];
-
-	use SoftDeletes;
 
 	public function contents()
 	{
