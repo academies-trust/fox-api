@@ -163,7 +163,7 @@ class ArticleController extends ApiController {
 	public function destroy(Article $article)
 	{
 		if($article->delete()) {
-			return $this->respondSuccess('Article Deleted');
+			return $this->respondWithItem($article, new ArticleTransformer);
 		}
 	}
 

@@ -6,8 +6,8 @@ use League\Fractal\TransformerAbstract;
 
 class NotificationTransformer extends TransformerAbstract {
 
-	protected $defaultIncludes = [
-		'post'
+	protected $availableIncludes = [
+		'posts'
 	];
 
 	public function transform(Notification $notification)
@@ -23,9 +23,9 @@ class NotificationTransformer extends TransformerAbstract {
 		return $template;
 	}
 
-	public function includePost(Notification $notification)
+	public function includePosts(Notification $notification)
 	{
-		$post = $notification->post;
-		return $this->item($post, new PostTransformer);
+		$posts = $notification->readable;
+		return $this->collection($posts, new PostTransformer);
 	}
 }

@@ -37,4 +37,10 @@ class CommentTransformer extends TransformerAbstract {
 		$user = $comment->user;
 		return $this->item($user, new UserTransformer);
 	}
+
+	public function includePosts(Comment $comment)
+	{
+		$posts = $comment->readable;
+		return $this->collection($posts, new PostTransformer);
+	}
 }

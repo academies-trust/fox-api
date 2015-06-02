@@ -51,4 +51,10 @@ class FeedbackTransformer extends TransformerAbstract {
 		$group = $feedback->group;
 		return $this->item($group, new GroupTransformer);
 	}
+
+	public function includePosts(Feedback $feedback)
+	{
+		$posts = $feedback->readable;
+		return $this->collection($posts, new PostTransformer);
+	}
 }

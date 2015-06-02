@@ -6,13 +6,10 @@ use League\Fractal\TransformerAbstract;
 
 class NoticeTransformer extends TransformerAbstract {
 
-	protected $defaultIncludes = [
-		'post'
-	];
-
 	protected $availableIncludes = [
 		'group',
-		'comments'
+		'comments',
+		'posts'
 	];
 
 	public function transform(Notice $notice)
@@ -40,9 +37,10 @@ class NoticeTransformer extends TransformerAbstract {
 		$comments = $notice->comments;
 		return $this->collection($comments, new CommentTransformer);
 	}
-	public function includePost(Notice $notice)
+	
+	public function includePosts(Notice $notice)
 	{
-		$post = $notice->post;
-		return $this->item($post, new PostTransformer);
+		$posts = $notice->readable;
+		return $this->collection($posts, new PostTransformer);
 	}
 }

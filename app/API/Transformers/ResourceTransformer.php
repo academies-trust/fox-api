@@ -32,7 +32,7 @@ class ResourceTransformer extends TransformerAbstract {
 	}
 	public function includePosts(Resource $resource)
 	{
-		$posts = $resource->posts;
+		$posts = $resource->readable;
 		return $this->collection($posts, new PostTransformer);
 	}
 }

@@ -6,12 +6,9 @@ use League\Fractal\TransformerAbstract;
 
 class GradingTransformer extends TransformerAbstract {
 
-	protected $defaultIncludes = [
-		'post'
-	];
-
 	protected $availableIncludes = [
 		'markingScheme',
+		'posts'
 	];
 
 	public function transform(Grading $grading)
@@ -32,5 +29,11 @@ class GradingTransformer extends TransformerAbstract {
 	{
 		$markingScheme = $grading->markingScheme;
 		return $this->item($markingScheme, new MarkingSchemeTransformer);
+	}
+
+	public function includePosts(Grading $grading)
+	{
+		$posts = $grading->readable;
+		return $this->collection($posts, new PostTransformer);
 	}
 }

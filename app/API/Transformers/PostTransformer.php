@@ -6,11 +6,9 @@ use League\Fractal\TransformerAbstract;
 
 class PostTransformer extends TransformerAbstract {
 
-	protected $defaultIncludes = [
-		'type',
-	];
 	protected $availableIncludes = [
 		'user',
+		'type',
 	];
 
 	public function transform(Post $post)
@@ -20,7 +18,7 @@ class PostTransformer extends TransformerAbstract {
 			'created'	=> $post['created_at'],
 			'published'	=> $post['published_at'],
 			'updated'	=> $post['updated_at'],
-			'deleted'	=> $post['deleted_at'],
+			'read'	=> $post['read_at'],
 			'links' => [
 				'rel' => 'self',
 				'uri' => '/posts/'.$post['id']
@@ -37,8 +35,8 @@ class PostTransformer extends TransformerAbstract {
 
 	public function includeType(Post $post)
 	{
-		$type = $post->postable;
-		switch ($post->postable_type) {
+		$type = $post->readable;
+		switch ($post->readable_type) {
 			case 'ServiceAlert':
 				return $this->item($item, new ServiceAlertTransformer);
 				break;

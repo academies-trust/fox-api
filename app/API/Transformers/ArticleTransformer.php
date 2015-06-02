@@ -14,6 +14,7 @@ class ArticleTransformer extends TransformerAbstract {
 	protected $availableIncludes = [
 		'group',
 		'revisions',
+		'posts',
 	];
 
 	public function transform(Article $article)
@@ -52,5 +53,11 @@ class ArticleTransformer extends TransformerAbstract {
 	{
 		$comments = $article->comments;
 		return $this->collection($comments, new CommentTransformer);
+	}
+
+	public function includePosts(Article $article)
+	{
+		$posts = $article->readable;
+		return $this->collection($posts, new PostTransformer);
 	}
 }

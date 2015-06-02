@@ -6,15 +6,12 @@ use League\Fractal\TransformerAbstract;
 
 class TaskTransformer extends TransformerAbstract {
 
-	protected $defaultIncludes = [
-		'post'
-	];
-
 	protected $availableIncludes = [
 		'group',
 		'comments',
 		'submissions',
 		'markingScheme',
+		'posts',
 	];
 
 	public function transform(Task $task)
@@ -46,9 +43,9 @@ class TaskTransformer extends TransformerAbstract {
 		$submissions = $task->submissions;
 		return $this->collection($submissions, new SubmissionTransformer);
 	}	
-	public function includePost(Task $task)
+	public function includePosts(Task $task)
 	{
-		$post = $task->post;
-		return $this->item($post, new PostTransformer);
+		$posts = $task->readable;
+		return $this->collection($posts, new PostTransformer);
 	}
 }

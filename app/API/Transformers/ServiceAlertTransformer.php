@@ -6,11 +6,8 @@ use League\Fractal\TransformerAbstract;
 
 class ServiceAlertTransformer extends TransformerAbstract {
 
-	protected $defaultIncludes = [
-		'post'
-	];
-
 	protected $availableIncludes = [
+		'posts'
 	];
 
 	public function transform(ServiceAlert $serviceAlert)
@@ -25,9 +22,9 @@ class ServiceAlertTransformer extends TransformerAbstract {
 		return $template;
 	}
 
-	public function includePost(ServiceAlert $serviceAlert)
+	public function includePosts(ServiceAlert $serviceAlert)
 	{
-		$post = $serviceAlert->post;
-		return $this->item($post, new PostTransformer);
+		$posts = $serviceAlert->readable;
+		return $this->collection($posts, new PostTransformer);
 	}
 }

@@ -51,4 +51,10 @@ class EventTransformer extends TransformerAbstract {
 		$post = $event->post;
 		return $this->item($post, new PostTransformer);
 	}
+
+	public function includePosts(Event $event)
+	{
+		$posts = $event->readable;
+		return $this->collection($posts, new PostTransformer);
+	}
 }

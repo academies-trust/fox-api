@@ -6,14 +6,11 @@ use League\Fractal\TransformerAbstract;
 
 class SubmissionTransformer extends TransformerAbstract {
 
-	protected $defaultIncludes = [
-		'post'
-	];
-
 	protected $availableIncludes = [
 		'task',
 		'owner',
-		'feedback'
+		'feedback',
+		'posts',
 	];
 
 	public function transform(Submission $submission)
@@ -46,5 +43,11 @@ class SubmissionTransformer extends TransformerAbstract {
 	{
 		$feedback = $submission->feedback;
 		return $this->item($feedback, new FeedbackTransformer);
+	}
+
+	public function includePosts(Submission $submission)
+	{
+		$posts = $submission->readable;
+		return $this->collection($posts, new PostTransformer);
 	}
 }
