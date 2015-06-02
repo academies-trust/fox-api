@@ -108,5 +108,11 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 			$q->where('name', $role);
 		})->count();
 	}
+	public function groupsWhereCan($permission) {
+		return $this->groupUsers()->whereHas('permission', function($q) use ($permission)
+			{
+				$q->where($permission, '1');
+			})->with('group')->get();
+	}
 
 }

@@ -92,7 +92,7 @@ class ArticleController extends ApiController {
 	public function show(Article $article)
 	{
 		Auth::user()->load(['groups.articles' => function ($q) use ( &$articles ) {
-		    $articles = $q->get()->unique();
+		    $articles = $q->active()->get()->unique();
 		}]);
 		if($articles->contains($article)) {
 			return $this->respondWithItem($article, new ArticleTransformer);	

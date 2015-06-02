@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Auth;
 
 class Article extends Model {
 
@@ -17,7 +18,11 @@ class Article extends Model {
 
 	public function scopeActive($query)
 	{
-		return $query->where('published_at', '<=', \Carbon\Carbon::now())->orderBy('published_at', 'desc')->orderBy('updated_at', 'desc');
+		return $query->where('published_at', '<=', \Carbon\Carbon::now())->orderBy('published_at', 'desc')->where(function($q) {
+			$q->whereNull('deleted_at')
+				->orWhere('user_id', Auth::user()->id)
+				->orWhereIn('group_id', Auth::user()->groupsWhereCan('admin')->lists('id'));
+		})->orderBy('updated_at', 'desc');
 	}
 
 	public function activeContent()
