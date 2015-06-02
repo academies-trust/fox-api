@@ -168,7 +168,8 @@ class ArticleController extends ApiController {
 	 */
 	public function destroy(Article $article)
 	{
-		if($article->delete()) {
+		$article->deleted_at = \Carbon\Carbon::now();
+		if($article->save()) {
 			return $this->respondWithItem($article, new ArticleTransformer);
 		}
 	}

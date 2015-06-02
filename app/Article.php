@@ -1,12 +1,9 @@
 <?php namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Auth;
 
 class Article extends Model {
-
-	use SoftDeletes;
 
 	protected 	$fillable = ['published_at', 'group_id', 'help', 'allow_comments', 'user_id'];
 	protected 	$dates = ['deleted_at', 'published_at'];
