@@ -1,11 +1,14 @@
 <?php namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Article extends Model {
 
 	protected 	$fillable = ['published_at', 'group_id', 'help', 'allow_comments', 'user_id'];
 	protected 	$dates = ['deleted_at', 'published_at'];
+
+	use SoftDeletes;
 
 	public function contents()
 	{
