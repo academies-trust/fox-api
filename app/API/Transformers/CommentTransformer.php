@@ -19,6 +19,7 @@ class CommentTransformer extends TransformerAbstract {
 			'created' => $comment['created_at'],
 			'updated' => $comment['updated_at'],
 			'published' => $comment['published_at'],
+			'deleted' => $article['deleted_at'],
 			'links' => [
 				'rel' => 'self',
 				'uri' => '/comments/'.$comment['id']
