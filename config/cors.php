@@ -16,7 +16,7 @@ return array(
      |
      */
     'defaults' => array(
-        'supportsCredentials' => false,
+        'supportsCredentials' => true,
         'allowedOrigins' => array(),
         'allowedHeaders' => array(),
         'allowedMethods' => array(),
