@@ -67,7 +67,7 @@ class GroupTransformer extends TransformerAbstract {
 	}
 	public function includeArticles(Group $group)
 	{
-		$articles = $group->articles;
+		$articles = $group->articles()->orderBy('published_at','desc')->get();
 		return $this->collection($articles, new ArticleTransformer);
 	}
 	public function includeTasks(Group $group)
