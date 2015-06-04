@@ -29,6 +29,7 @@ class ArticleController extends ApiController {
 		       $articles = $q->active()
 		       			->limit($this->per_page)
 		       			->skip($this->current)
+		       			->orderBy('published_at','desc')
 		       			->get()
 		       			->unique();
 		}]);
