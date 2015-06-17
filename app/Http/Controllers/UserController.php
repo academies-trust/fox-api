@@ -135,7 +135,7 @@ class UserController extends ApiController {
     	}
     	if($role)
     	{
-    		$sites = $user->sites()->get()->lists('id');
+    		$sites = $user->sites()->get()->lists('id')->all();
 	    	$adSites = [];
 	    	foreach(\App\Site::all() as $uSite)
 	    	{
@@ -187,7 +187,7 @@ class UserController extends ApiController {
 
 	public function addDefaultGroups($user_id, $site_id, $role_id)
 	{
-		$groups = \App\Site::find($site_id)->defaultGroups()->get()->lists('id');
+		$groups = \App\Site::find($site_id)->defaultGroups()->get()->lists('id')->all();
 		switch ($role_id) {
 			case '1':
 				$permission_id = 3;
@@ -210,7 +210,7 @@ class UserController extends ApiController {
 		$groups = \App\User::find($user_id)->groups()->whereHas('sites', function($q) use ($site_id)
 		{
 			$q->where('id', $site_id);
-		})->get()->lists('id');
+		})->get()->lists('id')->all();
 
 		User::find($user_id)->groups()->detach($groups);
 	}
@@ -270,7 +270,7 @@ class UserController extends ApiController {
 	}
 
 	public function getAssociatedSites($username) {
-		return User::where('username', $username)->lists('auth_site_id');
+		return User::where('username', $username)->lists('auth_site_id')->all();
 	}
 
 	public function authenticate(User $user, Request $request)

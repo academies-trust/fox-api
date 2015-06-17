@@ -203,7 +203,7 @@ class ArticleController extends ApiController {
 
 	protected function makeContent(Article $article, $content_id)
 	{
-		$poss_articles = $article->contents()->lists('id');
+		$poss_articles = $article->contents()->lists('id')->all();
 		if(in_array($content_id, $poss_articles))
 		{
 			$article->content_id = $content_id;

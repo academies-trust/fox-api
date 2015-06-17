@@ -18,7 +18,7 @@ class Article extends Model {
 		return $query->where('published_at', '<=', \Carbon\Carbon::now())->orderBy('published_at', 'desc')->where(function($q) {
 			$q->whereNull('deleted_at')
 				->orWhere('user_id', Auth::user()->id)
-				->orWhereIn('group_id', Auth::user()->groupsWhereCan('admin')->lists('id'));
+				->orWhereIn('group_id', Auth::user()->groupsWhereCan('admin')->lists('id')->all());
 		})->orderBy('updated_at', 'desc');
 	}
 
